@@ -91,6 +91,7 @@ export default {
   top: 0;
   right: 0;
   z-index: 820;
+  cursor: move;
   .el-tabs {
     padding: 0 20px;
     height: 100%;
