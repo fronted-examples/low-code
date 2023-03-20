@@ -1,15 +1,80 @@
 <template>
   <section class="canvas-container"
            ref="canvasContainer">
-    <div class="container-placeholder">拖拽组件或模板到这里</div>
+    <div v-if="!componentList.length"
+         class="container-placeholder">拖拽组件或模板到这里</div>
+    <div class="item"
+         v-for="item in componentList"
+         :key="item.id"
+         :ref="item.id"
+         :style="{
+          top: `${item.top - 16}px`,
+          left: `${item.left - 85}px`,
+          'z-index': `${item.zIndex}`
+        }">
+      <template v-if="item.code === 'Input'">
+        <el-input></el-input>
+      </template>
+    </div>
   </section>
 </template>
 
 <script>
 export default {
   name: 'CanvasContainer',
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data () {
-    return {}
+    return {
+      componentList: []
+    }
+  },
+  mounted () {
+    this.addDrag()
+  },
+  methods: {
+    addDrag () {
+      // 设置元素的放置行为——移动
+      this.$refs.canvasContainer.addEventListener('dragenter', this.dragenter)
+      // 在目标元素经过 必须要阻止默认行为 否则不能触发drop
+      this.$refs.canvasContainer.addEventListener('dragover', this.dragover)
+      // 离开目标元素时设置元素的放置行为——不能拖放
+      this.$refs.canvasContainer.addEventListener('dragleave', this.dragleave)
+      // 拖动元素在目标元素松手时添加元素到画布
+      this.$refs.canvasContainer.addEventListener('drop', this.drop)
+    },
+    removeDrag () {
+      this.$refs.canvasContainer.removeEventListener('dragenter', this.dragenter)
+      this.$refs.canvasContainer.removeEventListener('dragover', this.dragover)
+      this.$refs.canvasContainer.removeEventListener('dragleave', this.dragleave)
+      this.$refs.canvasContainer.removeEventListener('drop', this.drop)
+    },
+    dragenter (e) {
+      e.dataTransfer.dropEffect = 'move'
+    },
+    dragover (e) {
+      e.preventDefault()
+    },
+    dragleave (e) {
+      e.dataTransfer.dropEffect = 'none'
+    },
+    drop (e) {
+      const { code } = this.component
+      this.componentList.push({
+        top: e.offsetY,
+        left: e.offsetX,
+        zIndex: 1,
+        code: code,
+        id: `${code}_${Date.parse(new Date())}`
+      })
+
+      console.log('this.componentList: ', this.componentList)
+      // this.dragItem = null
+    }
   }
 }
 </script>

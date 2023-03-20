@@ -1,7 +1,8 @@
 <template>
   <section class="dashboard">
-    <component-library :component-list="components" />
-    <canvas-container />
+    <component-library :component-list="components"
+                       @dragItemStart="dragItemStart" />
+    <canvas-container :component="component" />
     <property-setting />
   </section>
 </template>
@@ -35,11 +36,20 @@ export default {
         name: '按钮',
         icon: 'button',
         props: {}
-      }]
+      }],
+      component: null
+    }
+  },
+  methods: {
+    dragItemStart (item) {
+      console.log('item: ', item)
+      this.component = item
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.dashboard {
+}
 </style>
