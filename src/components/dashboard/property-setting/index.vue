@@ -18,7 +18,7 @@ export default {
   name: 'PropertySetting',
   data () {
     return {
-      tabName: '属性',
+      tabName: 'property',
       tabList: [{
         label: '属性',
         name: 'property'
