@@ -41,33 +41,7 @@ export default {
       this.$emit('dragItemStart', item)
     },
     dragend (e) {
-      // this.$refs.targetContent.removeEventListener('dragenter', this.dragenter)
-      // this.$refs.targetContent.removeEventListener('dragover', this.dragover)
-      // this.$refs.targetContent.removeEventListener('dragleave', this.dragleave)
-      // this.$refs.targetContent.removeEventListener('drop', this.drop)
-    },
-    // dragenter (e) {
-    //   e.dataTransfer.dropEffect = 'move'
-    // },
-    dragover (e) {
-      e.preventDefault()
-
-      e.dataTransfer.dropEffect = 'link'
     }
-    // dragleave (e) {
-    //   e.dataTransfer.dropEffect = 'none'
-    // },
-    // drop (e) {
-    //   const { code } = this.dragItem
-    //   this.list2.push({
-    //     top: e.offsetY,
-    //     left: e.offsetX,
-    //     zIndex: 1,
-    //     code: code,
-    //     id: Date.parse(new Date())
-    //   })
-    //   this.dragItem = null
-    // }
   }
 }
 </script>

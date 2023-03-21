@@ -2,20 +2,40 @@
   <section class="property-setting"
            @mousedown="startMove"
            @mouseup="stopMove">
-    <el-tabs v-model="tabName"
+    <div class="settings-notice"
+         v-if="!component">
+      <p>请在左侧画布选中节点</p>
+    </div>
+
+    <el-tabs v-if="component"
+             v-model="tabName"
              @tab-click="selectTab"
              stretch>
       <el-tab-pane v-for="(item, index) of tabList"
                    :key="index"
                    :label="item.label"
-                   :name="item.name">用户管理</el-tab-pane>
+                   :name="item.name">
+        <el-form>
+          <el-form-item v-for="(option, index) of item.options"
+                        :key="index">
+            <label>{{option}}</label>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
     </el-tabs>
   </section>
 </template>
 
 <script>
+import { styleMap } from '@/utils/style'
 export default {
   name: 'PropertySetting',
+  props: {
+    component: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data () {
     return {
       tabName: 'property',
@@ -29,6 +49,45 @@ export default {
         label: '高级',
         name: 'advanced'
       }]
+    }
+  },
+  computed: {
+    STYLE_MAP () {
+      return styleMap
+    }
+  },
+  watch: {
+    component (newValue) {
+      console.log(newValue)
+      this.tabList.forEach((tab) => {
+        if (tab.name === 'property') {
+          // tab.options = newValue.props
+          tab.options = this.jsonToJsArray(newValue.props)
+        }
+
+        if (tab.name === 'style') {
+          // tab.options = newValue.style
+          tab.options = this.jsonToJsArray(newValue.style)
+        }
+
+        if (tab.name === 'advanced') {
+          // tab.options = newValue.advanced
+          tab.options = this.jsonToJsArray(newValue.advanced)
+        }
+      })
+
+      console.log('tabList: ', this.tabList)
+      // let jsonString = {
+      //   position: {
+      //     top: 133,
+      //     left: 602,
+      //     zIndex: 1
+      //   }
+      // }
+      // let jsonString = {
+      //   placeholder: '输入框'
+      // }
+      // console.log(this.jsonToJsArray(jsonString))
     }
   },
   methods: {
@@ -75,6 +134,34 @@ export default {
     },
     selectTab (tab, event) {
       console.log(tab, event)
+    },
+    jsonToJsArray (jsonString, params = []) {
+      for (let i in jsonString) {
+        if (Object.prototype.toString.call(jsonString[i]) !== '[object Object]') {
+          const param = {
+            label: styleMap[i]['zh_CN'],
+            value: jsonString[i]
+          }
+
+          params.push(param)
+        } else {
+          params.label = styleMap[i]['zh_CN']
+
+          if (Object.prototype.toString.call(jsonString[i]) === '[object Object]') {
+            for (let j in jsonString[i]) {
+              if (Object.prototype.toString.call(jsonString[i][j]) === '[object Number]') {
+                params.value = []
+              } else {
+                params.value = {}
+              }
+
+              this.jsonToJsArray(jsonString[i], params.value)
+            }
+          }
+        }
+      }
+
+      return params
     }
   }
 }
@@ -92,6 +179,18 @@ export default {
   right: 0;
   z-index: 820;
   cursor: move;
+  .settings-notice {
+    text-align: center;
+    font-size: 12px;
+    font-family: PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica, Arial, sans-serif;
+    color: rgba(0, 0, 0, 0.6);
+    padding: 50px 15px 0;
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
   .el-tabs {
     padding: 0 20px;
     height: 100%;

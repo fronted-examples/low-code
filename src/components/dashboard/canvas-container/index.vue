@@ -3,18 +3,37 @@
            ref="canvasContainer">
     <div v-if="!componentList.length"
          class="container-placeholder">拖拽组件或模板到这里</div>
-    <div class="item"
+
+    <div class="component-wrap"
          v-for="item in componentList"
          :key="item.id"
          :ref="item.id"
          :style="{
-          top: `${item.top - 16}px`,
-          left: `${item.left - 85}px`,
-          'z-index': `${item.zIndex}`
+          top: `${item.style.position.top - 16}px`,
+          left: `${item.style.position.left - 85}px`,
+          'z-index': `${item.style.position.zIndex}`
         }"
+         :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"
          @mousedown="e => moveItem(e, item)">
+      <span class="component-operate"
+            v-if="currentMoveItem && currentMoveItem.id === item.id">
+        <svg-icon icon-class="delete"
+                  @mousedown.stop
+                  @click.stop="deleteItem(item)" />
+      </span>
       <template v-if="item.code === 'Input'">
-        <el-input></el-input>
+        <el-input readonly></el-input>
+      </template>
+
+      <template v-if="item.code === 'Textarea'">
+        <el-input type="textarea"
+                  readonly></el-input>
+      </template>
+
+      <template v-if="item.code === 'Button'">
+        <input type="button"
+               disabled
+               value="按钮" />
       </template>
     </div>
   </section>
@@ -65,21 +84,42 @@ export default {
       e.dataTransfer.dropEffect = 'none'
     },
     drop (e) {
-      const { code } = this.component
-      this.componentList.push({
+      const { code, props, style, advanced } = this.component
+
+      // 不能直接进行对象赋值，浅拷贝一下
+      const params = {
+        code: code,
+        id: `${code}_${Date.parse(new Date())}`,
+        props: { ...props },
+        style: { ...style },
+        advanced: { ...advanced }
+      }
+
+      params.style.position = {
         top: e.offsetY,
         left: e.offsetX,
-        zIndex: 1,
-        code: code,
-        id: `${code}_${Date.parse(new Date())}`
-      })
+        zIndex: 1
+      }
+
+      this.currentMoveItem = params
+      this.$emit('selectComponent', params)
+      this.componentList.push(params)
 
       console.log('this.componentList: ', this.componentList)
     },
+    deleteItem (item) {
+      this.componentList.forEach((component, index) => {
+        if (component.id === item.id) {
+          this.componentList.splice(index, 1)
+        }
+      })
+    },
     moveItem (e, item) {
       this.currentMoveItem = item
-      document.addEventListener('mousemove', this.mousemove)
-      document.addEventListener('mouseup', this.mouseup)
+      this.$emit('selectComponent', item)
+      e.currentTarget.addEventListener('mousemove', this.mousemove)
+      e.currentTarget.addEventListener('mouseleave', this.mouseleave)
+      e.currentTarget.addEventListener('mouseup', this.mouseup)
     },
     mousemove (e) {
       const { clientX, clientY } = e
@@ -90,12 +130,17 @@ export default {
         }
       })
 
-      this.componentList[moveIdx].top = clientY
-      this.componentList[moveIdx].left = clientX
+      this.componentList[moveIdx].style.position.top = clientY
+      this.componentList[moveIdx].style.position.left = clientX
+    },
+    mouseleave (e) {
+      e.currentTarget.removeEventListener('mousemove', this.mousemove)
+      e.currentTarget.removeEventListener('mouseleave', this.mouseleave)
+      e.currentTarget.removeEventListener('mouseup', this.mouseup)
     },
     mouseup (e) {
-      document.removeEventListener('mousemove', this.mousemove)
-      document.removeEventListener('mouseup', this.mouseup)
+      e.currentTarget.removeEventListener('mousemove', this.mousemove)
+      e.currentTarget.removeEventListener('mouseup', this.mouseup)
     }
   }
 }
@@ -122,8 +167,41 @@ export default {
     font-size: 14px;
   }
 
-  .item {
+  .component-wrap {
     position: absolute;
+    cursor: move;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    &:hover {
+      border-width: 1px;
+      border-color: rgba(0, 137, 255, 1);
+      border-style: dashed;
+    }
+
+    &.selected {
+      border-width: 1px;
+      border-color: rgba(0, 137, 255, 1);
+      border-style: solid;
+      border-radius: 4px;
+    }
+
+    .component-operate {
+      display: inline-block;
+      height: 20px;
+      background-color: rgba(0, 137, 255, 1);
+      position: absolute;
+      top: -22px;
+      right: 0;
+
+      pointer-events: none;
+      cursor: default;
+
+      .svg-icon {
+        color: #fff;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+    }
   }
 }
 </style>
