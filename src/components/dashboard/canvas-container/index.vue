@@ -11,7 +11,8 @@
           top: `${item.top - 16}px`,
           left: `${item.left - 85}px`,
           'z-index': `${item.zIndex}`
-        }">
+        }"
+         @mousedown="e => moveItem(e, item)">
       <template v-if="item.code === 'Input'">
         <el-input></el-input>
       </template>
@@ -30,7 +31,8 @@ export default {
   },
   data () {
     return {
-      componentList: []
+      componentList: [],
+      currentMoveItem: null
     }
   },
   mounted () {
@@ -73,7 +75,27 @@ export default {
       })
 
       console.log('this.componentList: ', this.componentList)
-      // this.dragItem = null
+    },
+    moveItem (e, item) {
+      this.currentMoveItem = item
+      document.addEventListener('mousemove', this.mousemove)
+      document.addEventListener('mouseup', this.mouseup)
+    },
+    mousemove (e) {
+      const { clientX, clientY } = e
+      let moveIdx
+      this.componentList.forEach((item, index) => {
+        if (item.id === this.currentMoveItem.id) {
+          moveIdx = index
+        }
+      })
+
+      this.componentList[moveIdx].top = clientY
+      this.componentList[moveIdx].left = clientX
+    },
+    mouseup (e) {
+      document.removeEventListener('mousemove', this.mousemove)
+      document.removeEventListener('mouseup', this.mouseup)
     }
   }
 }
@@ -98,6 +120,10 @@ export default {
     align-items: center;
     justify-content: center;
     font-size: 14px;
+  }
+
+  .item {
+    position: absolute;
   }
 }
 </style>
