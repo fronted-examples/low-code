@@ -170,13 +170,23 @@ export default {
 
   .component-wrap {
     position: absolute;
-    cursor: move;
     box-sizing: border-box;
     border: 1px solid transparent;
     &:hover {
       border-width: 1px;
       border-color: rgba(0, 137, 255, 1);
       border-style: dashed;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: transparent;
+      cursor: default;
     }
 
     &.selected {
