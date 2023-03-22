@@ -135,31 +135,74 @@ export default {
     selectTab (tab, event) {
       console.log(tab, event)
     },
-    jsonToJsArray (jsonString, params = []) {
-      for (let i in jsonString) {
-        if (Object.prototype.toString.call(jsonString[i]) !== '[object Object]') {
+    jsonToJsArray (jsonString, params = [], object) {
+      // console.log(Object.keys(jsonString))
+      // const keys = Object.keys(jsonString)
+
+      // for (let i = 0; i < keys.length; i++) {
+      //   console.log(jsonString[keys[i]])
+
+      //   if (Object.prototype.toString.call(jsonString[keys[i]]) !== '[object Object]') {
+      //     const param = {
+      //       label: keys[i],
+      //       value: jsonString[keys[i]]
+      //     }
+
+      //     if (Object.prototype.toString.call(object) === '[object Object]' && Object.keys(object).length === 0) {
+      //       console.log('空 object： ', object)
+      //       params.push(param)
+      //     }
+
+      //     // if (Object.prototype.toString.call(object) === '[object Object]' && Object.keys(object).length !== 0) {
+      //     //   object.value = { ...param }
+      //     //   params.push(object)
+      //     // }
+      //   }
+
+      //   if (Object.prototype.toString.call(jsonString[keys[i]]) === '[object Object]') {
+      //     object.label = keys[i]
+
+      //     this.jsonToJsArray(jsonString[keys[i]], params, object)
+      //   }
+      // }
+
+      for (let key in jsonString) {
+        if (Object.prototype.toString.call(jsonString[key]) !== '[object Object]') {
           const param = {
-            label: styleMap[i]['zh_CN'],
-            value: jsonString[i]
+            label: key,
+            value: jsonString[key]
           }
 
-          params.push(param)
-        } else {
-          params.label = styleMap[i]['zh_CN']
-
-          if (Object.prototype.toString.call(jsonString[i]) === '[object Object]') {
-            for (let j in jsonString[i]) {
-              if (Object.prototype.toString.call(jsonString[i][j]) === '[object Number]') {
-                params.value = []
-              } else {
-                params.value = {}
-              }
-
-              this.jsonToJsArray(jsonString[i], params.value)
-            }
+          if (!object) {
+            params.push(param)
+          } else {
+            object.value.push(param)
+            // console.log('object: ', object)
           }
         }
+
+        if (Object.prototype.toString.call(jsonString[key]) === '[object Object]' && Object.keys(jsonString[key]).length !== 0) {
+          let object = {
+            label: key
+          }
+
+          for (let iKey in jsonString[key]) {
+            if (Object.prototype.toString.call(jsonString[key][iKey]) === '[object Object]' && Object.keys(jsonString[key][iKey]).length !== 0) {
+              object.value = {}
+            } else {
+              object.value = []
+            }
+          }
+
+          this.jsonToJsArray(jsonString[key], params, object)
+        }
       }
+
+      if (object) {
+        params.push(object)
+      }
+
+      console.log(params)
 
       return params
     }
