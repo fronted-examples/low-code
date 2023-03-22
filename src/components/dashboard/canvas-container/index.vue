@@ -96,6 +96,7 @@ export default {
       }
 
       params.style.position = {
+        ...params.style.position,
         top: e.offsetY,
         left: e.offsetX,
         zIndex: 1

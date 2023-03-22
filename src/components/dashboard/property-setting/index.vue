@@ -58,7 +58,7 @@ export default {
   },
   watch: {
     component (newValue) {
-      console.log(newValue)
+      console.log('newValue: ', newValue)
       this.tabList.forEach((tab) => {
         if (tab.name === 'property') {
           // tab.options = newValue.props
@@ -135,37 +135,7 @@ export default {
     selectTab (tab, event) {
       console.log(tab, event)
     },
-    jsonToJsArray (jsonString, params = [], object) {
-      // console.log(Object.keys(jsonString))
-      // const keys = Object.keys(jsonString)
-
-      // for (let i = 0; i < keys.length; i++) {
-      //   console.log(jsonString[keys[i]])
-
-      //   if (Object.prototype.toString.call(jsonString[keys[i]]) !== '[object Object]') {
-      //     const param = {
-      //       label: keys[i],
-      //       value: jsonString[keys[i]]
-      //     }
-
-      //     if (Object.prototype.toString.call(object) === '[object Object]' && Object.keys(object).length === 0) {
-      //       console.log('空 object： ', object)
-      //       params.push(param)
-      //     }
-
-      //     // if (Object.prototype.toString.call(object) === '[object Object]' && Object.keys(object).length !== 0) {
-      //     //   object.value = { ...param }
-      //     //   params.push(object)
-      //     // }
-      //   }
-
-      //   if (Object.prototype.toString.call(jsonString[keys[i]]) === '[object Object]') {
-      //     object.label = keys[i]
-
-      //     this.jsonToJsArray(jsonString[keys[i]], params, object)
-      //   }
-      // }
-
+    jsonToJsArray (jsonString, params = [], object = {}) {
       for (let key in jsonString) {
         if (Object.prototype.toString.call(jsonString[key]) !== '[object Object]') {
           const param = {
@@ -173,32 +143,55 @@ export default {
             value: jsonString[key]
           }
 
-          if (!object) {
-            params.push(param)
-          } else {
-            object.value.push(param)
-            // console.log('object: ', object)
+          if (Object.prototype.toString.call(object) === '[object Object]') {
+            if (Object.keys(object).length === 0) {
+              params.push(param)
+            }
+
+            if (Object.keys(object).length !== 0 && Object.prototype.toString.call(object.value) === '[object Object]') {
+              object.value = param
+            }
+
+            if (Object.keys(object).length !== 0 && Object.prototype.toString.call(object.value) === '[object Array]') {
+              object.value.push(param)
+            }
           }
         }
 
         if (Object.prototype.toString.call(jsonString[key]) === '[object Object]' && Object.keys(jsonString[key]).length !== 0) {
-          let object = {
-            label: key
-          }
+          console.log('递归：', key, jsonString[key])
 
-          for (let iKey in jsonString[key]) {
-            if (Object.prototype.toString.call(jsonString[key][iKey]) === '[object Object]' && Object.keys(jsonString[key][iKey]).length !== 0) {
-              object.value = {}
-            } else {
-              object.value = []
+          if (Object.keys(object).length === 0) {
+            let object = {
+              label: key
             }
-          }
 
-          this.jsonToJsArray(jsonString[key], params, object)
+            for (let iKey in jsonString[key]) {
+              if (Object.prototype.toString.call(jsonString[key][iKey]) === '[object Object]' && Object.keys(jsonString[key][iKey]).length !== 0) {
+                object.value = {}
+              } else {
+                object.value = []
+              }
+            }
+
+            this.jsonToJsArray(jsonString[key], params, object)
+          } else {
+            object.label = key
+
+            for (let iKey in jsonString[key]) {
+              if (Object.prototype.toString.call(jsonString[key][iKey]) === '[object Object]' && Object.keys(jsonString[key][iKey]).length !== 0) {
+                object.value = {}
+              } else {
+                object.value = []
+              }
+            }
+
+            this.jsonToJsArray(jsonString[key], params, object)
+          }
         }
       }
 
-      if (object) {
+      if (Object.prototype.toString.call(object) === '[object Object]' && Object.keys(object).length !== 0) {
         params.push(object)
       }
 

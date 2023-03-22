@@ -32,7 +32,10 @@ export default {
         style: {
           position: {
             top: 0,
-            left: 0
+            left: 0,
+            tip: {
+              message: '消息提示'
+            }
           },
           width: 100,
           height: 20
@@ -68,7 +71,6 @@ export default {
   },
   methods: {
     dragItemStart (item) {
-      console.log('item: ', item)
       this.component = item
     },
     selectComponent (item) {
