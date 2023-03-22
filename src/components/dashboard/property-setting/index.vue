@@ -61,33 +61,17 @@ export default {
       console.log('newValue: ', newValue)
       this.tabList.forEach((tab) => {
         if (tab.name === 'property') {
-          // tab.options = newValue.props
-          tab.options = this.jsonToJsArray(newValue.props)
+          tab.options = newValue.props
         }
 
         if (tab.name === 'style') {
-          // tab.options = newValue.style
-          tab.options = this.jsonToJsArray(newValue.style)
+          tab.options = newValue.style
         }
 
         if (tab.name === 'advanced') {
-          // tab.options = newValue.advanced
-          tab.options = this.jsonToJsArray(newValue.advanced)
+          tab.options = newValue.advanced
         }
       })
-
-      console.log('tabList: ', this.tabList)
-      // let jsonString = {
-      //   position: {
-      //     top: 133,
-      //     left: 602,
-      //     zIndex: 1
-      //   }
-      // }
-      // let jsonString = {
-      //   placeholder: '输入框'
-      // }
-      // console.log(this.jsonToJsArray(jsonString))
     }
   },
   methods: {
@@ -134,70 +118,6 @@ export default {
     },
     selectTab (tab, event) {
       console.log(tab, event)
-    },
-    jsonToJsArray (jsonString, params = [], object = {}) {
-      for (let key in jsonString) {
-        if (Object.prototype.toString.call(jsonString[key]) !== '[object Object]') {
-          const param = {
-            label: key,
-            value: jsonString[key]
-          }
-
-          if (Object.prototype.toString.call(object) === '[object Object]') {
-            if (Object.keys(object).length === 0) {
-              params.push(param)
-            }
-
-            if (Object.keys(object).length !== 0 && Object.prototype.toString.call(object.value) === '[object Object]') {
-              object.value = param
-            }
-
-            if (Object.keys(object).length !== 0 && Object.prototype.toString.call(object.value) === '[object Array]') {
-              object.value.push(param)
-            }
-          }
-        }
-
-        if (Object.prototype.toString.call(jsonString[key]) === '[object Object]' && Object.keys(jsonString[key]).length !== 0) {
-          console.log('递归：', key, jsonString[key])
-
-          if (Object.keys(object).length === 0) {
-            let object = {
-              label: key
-            }
-
-            for (let iKey in jsonString[key]) {
-              if (Object.prototype.toString.call(jsonString[key][iKey]) === '[object Object]' && Object.keys(jsonString[key][iKey]).length !== 0) {
-                object.value = {}
-              } else {
-                object.value = []
-              }
-            }
-
-            this.jsonToJsArray(jsonString[key], params, object)
-          } else {
-            object.label = key
-
-            for (let iKey in jsonString[key]) {
-              if (Object.prototype.toString.call(jsonString[key][iKey]) === '[object Object]' && Object.keys(jsonString[key][iKey]).length !== 0) {
-                object.value = {}
-              } else {
-                object.value = []
-              }
-            }
-
-            this.jsonToJsArray(jsonString[key], params, object)
-          }
-        }
-      }
-
-      if (Object.prototype.toString.call(object) === '[object Object]' && Object.keys(object).length !== 0) {
-        params.push(object)
-      }
-
-      console.log(params)
-
-      return params
     }
   }
 }
