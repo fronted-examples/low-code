@@ -1,5 +1,7 @@
 /**
  * 元素移动指令
+ *
+ * range 为true意味着元素可以任意摆放，为false只能在页面或者父元素内部摆放
  */
 const drag = {
   /**
@@ -7,7 +9,9 @@ const drag = {
    * 可执行插入节点操作
    * @param {*} el 节点
    */
-  inserted: function (el, { value }) {
+  inserted: function (el, { value, modifiers }) {
+    const { range } = modifiers
+
     el.onmousedown = function (e) {
       el.style.position = 'absolute'
       el.style.cursor = 'move'
@@ -21,25 +25,34 @@ const drag = {
 
       document.onmousemove = function (e) {
         let x, y
-        // e.pageX - disx  鼠标在页面上的位置 - 鼠标在元素中的偏移位置  得到的是元素相对于页面左上角的偏移位置
-        if ((e.pageX - distanceX) > 0) { // 元素相对于页面左上角的偏移位置 大于0时
-          if ((e.pageX - distanceX) > document.documentElement.clientWidth - el.clientWidth) { // 元素相对于页面左上角的偏移位置 移出到页面以外（右侧）
-            x = document.documentElement.clientWidth - el.clientWidth // el.clientWidth是元素自身的宽高
-          } else {
-            x = e.pageX - distanceX
+
+        if (!range) {
+          // e.pageX - disx  鼠标在页面上的位置 - 鼠标在元素中的偏移位置  得到的是元素相对于页面左上角的偏移位置
+          if ((e.pageX - distanceX) > 0) { // 元素相对于页面左上角的偏移位置 大于0时
+            if ((e.pageX - distanceX) > document.documentElement.clientWidth - el.clientWidth) { // 元素相对于页面左上角的偏移位置 移出到页面以外（右侧）
+              x = document.documentElement.clientWidth - el.clientWidth // el.clientWidth是元素自身的宽高
+            } else {
+              x = e.pageX - distanceX
+            }
+          } else { // 元素移到到页面以外（左侧）
+            x = 0
           }
-        } else { // 元素移到到页面以外（左侧）
-          x = 0
+
+          if ((e.pageY - distanceY) > 0) {
+            if ((e.pageY - distanceY) > document.documentElement.clientHeight - el.clientHeight) { // 元素移动到页面以外（底部）
+              y = document.documentElement.clientHeight - el.clientHeight
+            } else {
+              y = e.pageY - distanceY
+            }
+          } else { // 元素移动到页面以外（顶部）
+            y = 0
+          }
         }
 
-        if ((e.pageY - distanceY) > 0) {
-          if ((e.pageY - distanceY) > document.documentElement.clientHeight - el.clientHeight) { // 元素移动到页面以外（底部）
-            y = document.documentElement.clientHeight - el.clientHeight
-          } else {
-            y = e.pageY - distanceY
-          }
-        } else { // 元素移动到页面以外（顶部）
-          y = 0
+        if (range) {
+          x = e.pageX - distanceX
+
+          y = e.pageY - distanceY
         }
 
         el.style.left = x + 'px'
