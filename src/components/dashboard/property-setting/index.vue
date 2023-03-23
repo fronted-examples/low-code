@@ -1,6 +1,6 @@
 <template>
   <section class="property-setting"
-           v-drag>
+           v-drag="position">
     <div class="settings-notice"
          v-if="!component">
       <p>请在左侧画布选中节点</p>
@@ -52,7 +52,11 @@ export default {
       }, {
         label: '高级',
         name: 'advanced'
-      }]
+      }],
+      position: {
+        top: 0,
+        left: 0
+      }
     }
   },
   computed: {

@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { deepCopy } from '@/utils/index'
 export default {
   name: 'CanvasContainer',
   props: {
@@ -86,7 +87,11 @@ export default {
   data () {
     return {
       componentList: [],
-      currentMoveItem: null
+      currentMoveItem: null,
+      nodePosition: {
+        top: 0,
+        left: 0
+      }
     }
   },
   mounted () {
@@ -125,11 +130,16 @@ export default {
       const params = {
         code: code,
         id: `${code}_${Date.parse(new Date())}`,
-        props: { ...props },
-        style: { ...style },
-        advanced: { ...advanced },
+        props: deepCopy(props),
+        style: deepCopy(style),
+        advanced: deepCopy(advanced),
         children: children || []
       }
+
+      console.log(e)
+
+      // const distanceX = e.pageX - el.offsetLeft
+      // const distanceY = e.pageY - el.offsetTop
 
       params.style.top.value = e.offsetY
       params.style.left.value = e.offsetX
@@ -138,18 +148,17 @@ export default {
       this.currentMoveItem = params
       this.$emit('selectComponent', params)
 
-      if (!this.componentList.length) {
+      let flag = false
+
+      for (let i = 0; i < this.componentList.length; i++) {
+        if (e.toElement.id === this.componentList[i].id) {
+          this.componentList[i].children.push(params)
+          flag = true
+        }
+      }
+
+      if (!flag) {
         this.componentList.push(params)
-      } else {
-        this.componentList.forEach((component) => {
-          console.log('component: ', component)
-          console.log('id: ', e.toElement.id)
-          if (e.toElement.id === component.id) {
-            component.children.push(params)
-          } else {
-            this.componentList.push(params)
-          }
-        })
       }
 
       console.log('this.componentList: ', this.componentList)
@@ -172,9 +181,9 @@ export default {
       console.log('item: ', item, e)
       this.currentMoveItem = item
       this.$emit('selectComponent', item)
-      e.currentTarget.addEventListener('mousemove', this.mousemove)
-      e.currentTarget.addEventListener('mouseleave', this.mouseleave)
-      e.currentTarget.addEventListener('mouseup', this.mouseup)
+      document.addEventListener('mousemove', this.mousemove)
+      document.addEventListener('mouseleave', this.mouseleave)
+      document.addEventListener('mouseup', this.mouseup)
     },
     mousemove (e) {
       console.log('移动鼠标：', e)
@@ -193,13 +202,13 @@ export default {
       // this.currentMoveItem.style.left.value = clientX
     },
     mouseleave (e) {
-      e.currentTarget.removeEventListener('mousemove', this.mousemove)
-      e.currentTarget.removeEventListener('mouseleave', this.mouseleave)
-      e.currentTarget.removeEventListener('mouseup', this.mouseup)
+      document.removeEventListener('mousemove', this.mousemove)
+      document.removeEventListener('mouseleave', this.mouseleave)
+      document.removeEventListener('mouseup', this.mouseup)
     },
     mouseup (e) {
-      e.currentTarget.removeEventListener('mousemove', this.mousemove)
-      e.currentTarget.removeEventListener('mouseup', this.mouseup)
+      document.removeEventListener('mousemove', this.mousemove)
+      document.removeEventListener('mouseup', this.mouseup)
     }
   }
 }

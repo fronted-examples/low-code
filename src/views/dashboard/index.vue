@@ -63,13 +63,13 @@ export default {
           width: {
             name: 'width',
             label: '宽度',
-            value: 0,
+            value: 208,
             required: false
           },
           height: {
             name: 'height',
             label: '高度',
-            value: 0,
+            value: 40,
             required: false
           }
         },

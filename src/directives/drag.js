@@ -7,7 +7,8 @@ const drag = {
    * 可执行插入节点操作
    * @param {*} el 节点
    */
-  inserted: function (el) {
+  inserted: function (el, binding) {
+    console.log(binding)
     el.onmousedown = function (e) {
       el.style.position = 'absolute'
       el.style.cursor = 'move'
