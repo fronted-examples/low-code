@@ -18,7 +18,9 @@
         <el-form>
           <el-form-item v-for="(option, index) of item.options"
                         :key="index">
-            <label>{{option}}</label>
+            <label>{{option.label}}</label>
+            <el-input-number v-if="Object.prototype.toString.call(option.value) === '[object Number]'"
+                             v-model="option.value"></el-input-number>
           </el-form-item>
         </el-form>
       </el-tab-pane>

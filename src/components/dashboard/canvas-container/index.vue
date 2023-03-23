@@ -43,8 +43,8 @@
            :key="child.id"
            :ref="child.id"
            :style="{
-          top: `${child.style.top.value - 16}px`,
-          left: `${child.style.left.value - 85}px`,
+          top: `${child.style.top.value}px`,
+          left: `${child.style.left.value}px`,
           'z-index': `${child.style.zIndex.value}`
         }"
            :class="[currentMoveItem && currentMoveItem.id === child.id ? 'selected' : '']"
@@ -169,7 +169,7 @@ export default {
       }
     },
     moveItem (e, item) {
-      console.log('item: ', item)
+      console.log('item: ', item, e)
       this.currentMoveItem = item
       this.$emit('selectComponent', item)
       e.currentTarget.addEventListener('mousemove', this.mousemove)
@@ -177,10 +177,20 @@ export default {
       e.currentTarget.addEventListener('mouseup', this.mouseup)
     },
     mousemove (e) {
-      const { clientX, clientY } = e
+      console.log('移动鼠标：', e)
 
-      this.currentMoveItem.style.top.value = clientY
-      this.currentMoveItem.style.left.value = clientX
+      const { clientX, clientY, offsetX, offsetY } = e
+      if (e.target.parentElement.id) {
+        this.currentMoveItem.style.top.value = offsetY
+        this.currentMoveItem.style.left.value = offsetX
+      } else {
+        this.currentMoveItem.style.top.value = clientY
+        this.currentMoveItem.style.left.value = clientX
+      }
+      // const { clientX, clientY } = e
+
+      // this.currentMoveItem.style.top.value = clientY
+      // this.currentMoveItem.style.left.value = clientX
     },
     mouseleave (e) {
       e.currentTarget.removeEventListener('mousemove', this.mousemove)
