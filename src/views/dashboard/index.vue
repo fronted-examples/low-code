@@ -62,7 +62,9 @@ export default {
           },
           height: {
             name: 'height',
-            label: '高度'
+            label: '高度',
+            value: 0,
+            required: false
           }
         },
         advanced: {}
