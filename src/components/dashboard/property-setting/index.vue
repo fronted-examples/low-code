@@ -19,6 +19,9 @@
           <el-form-item v-for="(option, index) of item.options"
                         :key="index">
             <label>{{option.label}}</label>
+            <el-input v-if="Object.prototype.toString.call(option.value) === '[object String]'"
+                      v-model="option.value"
+                      :placeholder="option.placeholder"></el-input>
             <el-input-number v-if="Object.prototype.toString.call(option.value) === '[object Number]'"
                              v-model="option.value"></el-input-number>
           </el-form-item>

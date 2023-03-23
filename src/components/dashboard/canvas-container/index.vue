@@ -10,8 +10,8 @@
          :key="item.id"
          :ref="item.id"
          :style="{
-          top: `${item.style.top.value - 16}px`,
-          left: `${item.style.left.value - 85}px`,
+          top: `${item.style.top.value}px`,
+          left: `${item.style.left.value}px`,
           'z-index': `${item.style.zIndex.value}`
         }"
          :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"

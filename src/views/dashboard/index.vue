@@ -28,6 +28,12 @@ export default {
         icon: 'input',
         children: [],
         props: {
+          label: {
+            name: 'label',
+            label: 'label',
+            value: '标签',
+            required: false
+          },
           placeholder: {
             name: 'placeholder',
             label: 'placeholder',
@@ -73,6 +79,12 @@ export default {
         name: '多行输入框',
         icon: 'textarea',
         props: {
+          label: {
+            name: 'label',
+            label: 'label',
+            value: '标签',
+            required: false
+          },
           placeholder: {
             name: 'placeholder',
             label: 'placeholder',
@@ -107,7 +119,9 @@ export default {
           },
           height: {
             name: 'height',
-            label: '高度'
+            label: '高度',
+            value: 0,
+            required: false
           }
         },
         advanced: []
@@ -116,6 +130,12 @@ export default {
         name: '按钮',
         icon: 'button',
         props: {
+          label: {
+            name: 'label',
+            label: 'label',
+            value: '标签',
+            required: false
+          },
           placeholder: {
             name: 'placeholder',
             label: 'placeholder',
@@ -150,7 +170,9 @@ export default {
           },
           height: {
             name: 'height',
-            label: '高度'
+            label: '高度',
+            value: 0,
+            required: false
           }
         },
         advanced: {}
