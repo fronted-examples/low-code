@@ -11,9 +11,12 @@ import '@/icons'
 
 import UITemplate from '@/templates/index'
 
+import Directives from './directives'
+
 Vue.config.productionTip = false
 
 Vue.use(UITemplate)
+Vue.use(Directives)
 Vue.use(ElementUI)
 
 /* eslint-disable no-new */
