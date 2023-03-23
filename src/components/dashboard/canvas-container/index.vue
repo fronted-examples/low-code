@@ -6,12 +6,13 @@
 
     <div class="component-wrap"
          v-for="item in componentList"
+         :id="item.id"
          :key="item.id"
          :ref="item.id"
          :style="{
-          top: `${item.style.position.top - 16}px`,
-          left: `${item.style.position.left - 85}px`,
-          'z-index': `${item.style.position.zIndex}`
+          top: `${item.style.top.value - 16}px`,
+          left: `${item.style.left.value - 85}px`,
+          'z-index': `${item.style.zIndex.value}`
         }"
          :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"
          @mousedown="e => moveItem(e, item)">
@@ -35,6 +36,40 @@
                disabled
                value="按钮" />
       </template>
+
+      <div class="component-wrap"
+           v-for="child in item.children"
+           :id="child.id"
+           :key="child.id"
+           :ref="child.id"
+           :style="{
+          top: `${child.style.top.value - 16}px`,
+          left: `${child.style.left.value - 85}px`,
+          'z-index': `${child.style.zIndex.value}`
+        }"
+           :class="[currentMoveItem && currentMoveItem.id === child.id ? 'selected' : '']"
+           @mousedown.stop="e => moveItem(e, child)">
+        <span class="component-operate"
+              v-if="currentMoveItem && currentMoveItem.id === child.id">
+          <svg-icon icon-class="delete"
+                    @mousedown.stop
+                    @click.stop="deleteItem(child)" />
+        </span>
+        <template v-if="child.code === 'Input'">
+          <el-input readonly></el-input>
+        </template>
+
+        <template v-if="child.code === 'Textarea'">
+          <el-input type="textarea"
+                    readonly></el-input>
+        </template>
+
+        <template v-if="child.code === 'Button'">
+          <input type="button"
+                 disabled
+                 value="按钮" />
+        </template>
+      </div>
     </div>
   </section>
 </template>
@@ -84,7 +119,7 @@ export default {
       e.dataTransfer.dropEffect = 'none'
     },
     drop (e) {
-      const { code, props, style, advanced } = this.component
+      const { code, props, style, advanced, children } = this.component
 
       // 不能直接进行对象赋值，浅拷贝一下
       const params = {
@@ -92,30 +127,49 @@ export default {
         id: `${code}_${Date.parse(new Date())}`,
         props: { ...props },
         style: { ...style },
-        advanced: { ...advanced }
+        advanced: { ...advanced },
+        children: children || []
       }
 
-      params.style.position = {
-        ...params.style.position,
-        top: e.offsetY,
-        left: e.offsetX,
-        zIndex: 1
-      }
+      params.style.top.value = e.offsetY
+      params.style.left.value = e.offsetX
+      params.style.zIndex.value = 1
 
       this.currentMoveItem = params
       this.$emit('selectComponent', params)
-      this.componentList.push(params)
+
+      if (!this.componentList.length) {
+        this.componentList.push(params)
+      } else {
+        this.componentList.forEach((component) => {
+          console.log('component: ', component)
+          console.log('id: ', e.toElement.id)
+          if (e.toElement.id === component.id) {
+            component.children.push(params)
+          } else {
+            this.componentList.push(params)
+          }
+        })
+      }
 
       console.log('this.componentList: ', this.componentList)
     },
     deleteItem (item) {
-      this.componentList.forEach((component, index) => {
-        if (component.id === item.id) {
-          this.componentList.splice(index, 1)
+      this.recursionDeleteListItem(this.componentList, item)
+    },
+    recursionDeleteListItem (array, deleteItem) {
+      if (array.length) {
+        for (let i = array.length - 1; i >= 0; i--) {
+          if (array[i].id === deleteItem.id) {
+            array.splice(i, 1)
+          } else if (array[i].children) {
+            this.recursionDeleteListItem(array[i].children, deleteItem)
+          }
         }
-      })
+      }
     },
     moveItem (e, item) {
+      console.log('item: ', item)
       this.currentMoveItem = item
       this.$emit('selectComponent', item)
       e.currentTarget.addEventListener('mousemove', this.mousemove)
@@ -124,15 +178,9 @@ export default {
     },
     mousemove (e) {
       const { clientX, clientY } = e
-      let moveIdx
-      this.componentList.forEach((item, index) => {
-        if (item.id === this.currentMoveItem.id) {
-          moveIdx = index
-        }
-      })
 
-      this.componentList[moveIdx].style.position.top = clientY
-      this.componentList[moveIdx].style.position.left = clientX
+      this.currentMoveItem.style.top.value = clientY
+      this.currentMoveItem.style.left.value = clientX
     },
     mouseleave (e) {
       e.currentTarget.removeEventListener('mousemove', this.mousemove)

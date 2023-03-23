@@ -26,110 +26,132 @@ export default {
         code: 'Input',
         name: '输入框',
         icon: 'input',
-        props: [{
-          name: '标签',
-          label: '输入框',
-          required: false
-        }, {
-          name: 'placeholder',
-          label: 'placeholder',
-          value: '多行输入框',
-          required: false
-        }],
-        style: [{
-          name: 'top',
-          label: '顶部',
-          value: 0,
-          required: true
-        }, {
-          name: 'label',
-          label: '左边',
-          value: 0,
-          required: true
-        }, {
-          name: 'width',
-          label: '宽度',
-          value: 100,
-          required: true
-        }, {
-          name: 'height',
-          label: '高度',
-          value: 20,
-          required: false
-        }],
-        advanced: []
+        children: [],
+        props: {
+          placeholder: {
+            name: 'placeholder',
+            label: 'placeholder',
+            value: '多行输入框',
+            required: false
+          }
+        },
+        style: {
+          top: {
+            name: 'top',
+            label: '顶部',
+            value: 0,
+            required: false
+          },
+          left: {
+            name: 'left',
+            label: '左边',
+            value: 0,
+            required: false
+          },
+          zIndex: {
+            name: 'zIndex',
+            label: '层级',
+            value: 0,
+            required: false
+          },
+          width: {
+            name: 'width',
+            label: '宽度',
+            value: 0,
+            required: false
+          },
+          height: {
+            name: 'height',
+            label: '高度'
+          }
+        },
+        advanced: {}
       }, {
         code: 'Textarea',
         name: '多行输入框',
         icon: 'textarea',
-        props: [{
-          name: '标签',
-          label: '输入框',
-          required: false
-        }, {
-          name: 'placeholder',
-          label: 'placeholder',
-          value: '多行输入框',
-          required: false
-        }],
-        style: [{
-          name: 'top',
-          label: '顶部',
-          value: 0,
-          required: false
-        }, {
-          name: 'label',
-          label: '左边',
-          value: 0,
-          required: false
-        }, {
-          name: 'width',
-          label: '宽度',
-          value: 100,
-          required: true
-        }, {
-          name: 'height',
-          label: '高度',
-          value: 20,
-          required: false
-        }],
+        props: {
+          placeholder: {
+            name: 'placeholder',
+            label: 'placeholder',
+            value: '多行输入框',
+            required: false
+          }
+        },
+        style: {
+          top: {
+            name: 'top',
+            label: '顶部',
+            value: 0,
+            required: false
+          },
+          left: {
+            name: 'left',
+            label: '左边',
+            value: 0,
+            required: false
+          },
+          zIndex: {
+            name: 'zIndex',
+            label: '层级',
+            value: 0,
+            required: false
+          },
+          width: {
+            name: 'width',
+            label: '宽度',
+            value: 0,
+            required: false
+          },
+          height: {
+            name: 'height',
+            label: '高度'
+          }
+        },
         advanced: []
       }, {
         code: 'Button',
         name: '按钮',
         icon: 'button',
-        props: [{
-          name: '标签',
-          label: '输入框',
-          required: false
-        }, {
-          name: 'placeholder',
-          label: 'placeholder',
-          value: '多行输入框',
-          required: false
-        }],
-        style: [{
-          name: 'top',
-          label: '顶部',
-          value: 0,
-          required: false
-        }, {
-          name: 'label',
-          label: '左边',
-          value: 0,
-          required: false
-        }, {
-          name: 'width',
-          label: '宽度',
-          value: 100,
-          required: true
-        }, {
-          name: 'height',
-          label: '高度',
-          value: 20,
-          required: false
-        }],
-        advanced: []
+        props: {
+          placeholder: {
+            name: 'placeholder',
+            label: 'placeholder',
+            value: '按钮',
+            required: false
+          }
+        },
+        style: {
+          top: {
+            name: 'top',
+            label: '顶部',
+            value: 0,
+            required: false
+          },
+          left: {
+            name: 'left',
+            label: '左边',
+            value: 0,
+            required: false
+          },
+          zIndex: {
+            name: 'zIndex',
+            label: '层级',
+            value: 0,
+            required: false
+          },
+          width: {
+            name: 'width',
+            label: '宽度',
+            value: 0,
+            required: false
+          },
+          height: {
+            name: 'height',
+            label: '高度'
+          }
+        },
+        advanced: {}
       }],
       component: null
     }
