@@ -7,8 +7,7 @@ const drag = {
    * 可执行插入节点操作
    * @param {*} el 节点
    */
-  inserted: function (el, binding) {
-    console.log(binding)
+  inserted: function (el, { value }) {
     el.onmousedown = function (e) {
       el.style.position = 'absolute'
       el.style.cursor = 'move'
@@ -34,8 +33,8 @@ const drag = {
         }
 
         if ((e.pageY - distanceY) > 0) {
-          if ((e.pageY - distanceY) > document.documentElement.clientHeight - el.clientWidth) { // 元素移动到页面以外（底部）
-            y = document.documentElement.clientHeight - el.clientWidth
+          if ((e.pageY - distanceY) > document.documentElement.clientHeight - el.clientHeight) { // 元素移动到页面以外（底部）
+            y = document.documentElement.clientHeight - el.clientHeight
           } else {
             y = e.pageY - distanceY
           }
@@ -45,17 +44,22 @@ const drag = {
 
         el.style.left = x + 'px'
         el.style.top = y + 'px'
+
+        value.top = y
+        value.left = x
+
+        console.log(value)
       }
     }
 
     el.onmouseleave = function (e) {
-      document.onmousemove = document.onmouseup = null
       el.style.cursor = 'default'
+      document.onmousemove = document.onmouseup = null
     }
 
     el.onmouseup = function (e) {
-      document.onmousemove = document.onmouseup = null
       el.style.cursor = 'default'
+      document.onmousemove = document.onmouseup = null
     }
   },
   // 只调用一次， 指令与元素解绑时调用。

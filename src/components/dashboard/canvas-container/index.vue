@@ -14,8 +14,9 @@
           left: `${item.style.left.value}px`,
           'z-index': `${item.style.zIndex.value}`
         }"
+         v-drag="wrapPosition"
          :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"
-         @mousedown="e => moveItem(e, item)">
+         @mousedown.stop="selectItem(item)">
       <span class="component-operate"
             v-if="currentMoveItem && currentMoveItem.id === item.id">
         <svg-icon icon-class="delete"
@@ -48,7 +49,8 @@
           'z-index': `${child.style.zIndex.value}`
         }"
            :class="[currentMoveItem && currentMoveItem.id === child.id ? 'selected' : '']"
-           @mousedown.stop="e => moveItem(e, child)">
+           v-drag="wrapPosition"
+           @mousedown.stop="selectItem(child)">
         <span class="component-operate"
               v-if="currentMoveItem && currentMoveItem.id === child.id">
           <svg-icon icon-class="delete"
@@ -88,10 +90,20 @@ export default {
     return {
       componentList: [],
       currentMoveItem: null,
-      nodePosition: {
+      wrapPosition: {
         top: 0,
         left: 0
       }
+    }
+  },
+  watch: {
+    'wrapPosition.top' (newVal) {
+      console.log('top: ', newVal)
+      this.currentMoveItem.style.top.value = newVal
+    },
+    'wrapPosition.left' (newVal) {
+      console.log('left: ', newVal)
+      this.currentMoveItem.style.left.value = newVal
     }
   },
   mounted () {
@@ -138,9 +150,6 @@ export default {
 
       console.log(e)
 
-      // const distanceX = e.pageX - el.offsetLeft
-      // const distanceY = e.pageY - el.offsetTop
-
       params.style.top.value = e.offsetY
       params.style.left.value = e.offsetX
       params.style.zIndex.value = 1
@@ -177,38 +186,10 @@ export default {
         }
       }
     },
-    moveItem (e, item) {
-      console.log('item: ', item, e)
+    selectItem (item) {
+      console.log('item: ', item)
       this.currentMoveItem = item
       this.$emit('selectComponent', item)
-      document.addEventListener('mousemove', this.mousemove)
-      document.addEventListener('mouseleave', this.mouseleave)
-      document.addEventListener('mouseup', this.mouseup)
-    },
-    mousemove (e) {
-      console.log('移动鼠标：', e)
-
-      const { clientX, clientY, offsetX, offsetY } = e
-      if (e.target.parentElement.id) {
-        this.currentMoveItem.style.top.value = offsetY
-        this.currentMoveItem.style.left.value = offsetX
-      } else {
-        this.currentMoveItem.style.top.value = clientY
-        this.currentMoveItem.style.left.value = clientX
-      }
-      // const { clientX, clientY } = e
-
-      // this.currentMoveItem.style.top.value = clientY
-      // this.currentMoveItem.style.left.value = clientX
-    },
-    mouseleave (e) {
-      document.removeEventListener('mousemove', this.mousemove)
-      document.removeEventListener('mouseleave', this.mouseleave)
-      document.removeEventListener('mouseup', this.mouseup)
-    },
-    mouseup (e) {
-      document.removeEventListener('mousemove', this.mousemove)
-      document.removeEventListener('mouseup', this.mouseup)
     }
   }
 }
