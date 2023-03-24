@@ -1,6 +1,7 @@
 <template>
   <section class="canvas-container"
            ref="canvasContainer">
+    <el-button type="text">查看json</el-button>
     <div v-if="!componentList.length"
          class="container-placeholder">拖拽组件或模板到这里</div>
 
@@ -73,6 +74,12 @@
         </template>
       </div>
     </div>
+
+    <el-dialog title="查看json"
+               :visible.sync="visible">
+      <ace v-model="json"
+           theme="kuroir" />
+    </el-dialog>
   </section>
 </template>
 
@@ -93,7 +100,9 @@ export default {
       wrapPosition: {
         top: 0,
         left: 0
-      }
+      },
+      visible: false,
+      json: {}
     }
   },
   watch: {
@@ -197,7 +206,7 @@ export default {
 
 <style lang="scss" scoped>
 .canvas-container {
-  min-width: 1200px;
+  width: calc(100vw - 266px);
   min-height: 560px;
   background-color: #fff;
   padding: 24px;

@@ -469,9 +469,9 @@ export default {
     bottom: 0;
     width: 50%;
     height: 100%;
-    overflow: scroll;
+    overflow: auto;
     box-shadow: grey -5px 2px 3px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.63);
     z-index: 1;
 
     .item {
