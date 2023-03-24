@@ -1,7 +1,11 @@
 import SvgIcon from './SvgIcon'
+import InputComponent from './InputComponent'
+import Ace from './Ace'
 
 const components = [
-  SvgIcon
+  SvgIcon,
+  InputComponent,
+  Ace
 ]
 
 const install = function (Vue) {
@@ -16,5 +20,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 export default {
   install,
-  SvgIcon
+  SvgIcon,
+  InputComponent,
+  Ace
 }

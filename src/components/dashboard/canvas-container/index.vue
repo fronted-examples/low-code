@@ -24,7 +24,7 @@
                   @click.stop="deleteItem(item)" />
       </span>
       <template v-if="item.code === 'Input'">
-        <el-input readonly></el-input>
+        <input-component />
       </template>
 
       <template v-if="item.code === 'Textarea'">
@@ -58,7 +58,7 @@
                     @click.stop="deleteItem(child)" />
         </span>
         <template v-if="child.code === 'Input'">
-          <el-input readonly></el-input>
+          <input-component />
         </template>
 
         <template v-if="child.code === 'Textarea'">

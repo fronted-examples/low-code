@@ -5,6 +5,9 @@
     <canvas-container :component="component"
                       @selectComponent="selectComponent" />
     <property-setting :component="component" />
+
+    <ace v-model="content"
+         theme="kuroir" />
   </section>
 </template>
 
@@ -177,7 +180,13 @@ export default {
         },
         advanced: {}
       }],
-      component: null
+      component: null,
+      content: ''
+    }
+  },
+  watch: {
+    content (newVal) {
+      console.log('ace content：', newVal)
     }
   },
   methods: {
