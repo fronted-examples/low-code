@@ -283,7 +283,7 @@ const modeMap = {
 export default {
   name: 'Ace',
   props: {
-    value: [String, Object],
+    value: String,
     readOnly: Boolean,
     theme: {
       type: String,
@@ -312,6 +312,13 @@ export default {
   computed: {
     disabled () {
       return this.readOnly
+    }
+  },
+  watch: {
+    value (newVal) {
+      if (this.readOnly) {
+        this.aceEditor.getSession().setValue(newVal)
+      }
     }
   },
   mounted () {

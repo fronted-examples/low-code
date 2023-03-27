@@ -17,6 +17,8 @@ import CanvasContainer from '@/components/dashboard/canvas-container'
 import ComponentLibrary from '@/components/dashboard/component-library'
 import PropertySetting from '@/components/dashboard/property-setting'
 
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Dashboard',
   components: {
@@ -219,7 +221,32 @@ export default {
       console.log('ace content：', newVal)
     }
   },
+  created () {
+    this.createPage({
+      id: `page_${new Date().getTime()}`,
+      name: 'pageOne',
+      style: {
+        minWidth: {
+          type: 'number',
+          label: '最小宽度',
+          value: 1200,
+          required: false,
+          unit: 'px'
+        },
+        minHeight: {
+          type: 'number',
+          label: '最小高度',
+          value: 1200,
+          required: false,
+          unit: 'px'
+        }
+      }
+    })
+  },
   methods: {
+    ...mapActions({
+      createPage: 'appModule/createPage'
+    }),
     dragItemStart (item) {
       this.component = item
     },

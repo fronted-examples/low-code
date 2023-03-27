@@ -6,9 +6,14 @@
                  @click="readJson">查看json</el-button>
     </div>
 
+    <RecursionComponent :data="page.children"></RecursionComponent>
+
     <div class="content-wrap">
       <section class="page-content"
-               ref="pageContent">
+               ref="pageContent"
+               :style="{minWidth: page.style.minWidth.value + 'px', minHeight: page.style.minHeight.value + 'px'}"
+               :class="[currentMoveItem && currentMoveItem.id === page.id ? 'selected' : '']"
+               @mousedown.stop="selectItem(page)">
         <div v-if="!componentList.length"
              class="container-placeholder">拖拽组件或模板到这里</div>
 
@@ -96,8 +101,15 @@
 
 <script>
 import { deepCopy } from '@/utils/index'
+import { mapGetters, mapActions } from 'vuex'
+
+import RecursionComponent from '@/components/recursion-component'
+
 export default {
   name: 'CanvasContainer',
+  components: {
+    RecursionComponent
+  },
   props: {
     component: {
       type: Object,
@@ -113,29 +125,35 @@ export default {
         left: 0
       },
       visible: false,
-      json: JSON.stringify({
-        name: '1',
-        value: {
-          name: 2,
-          value: 3
-        }
-      }, null, 2)
+      json: ''
     }
+  },
+  computed: {
+    ...mapGetters('appModule', ['page'])
   },
   watch: {
     'wrapPosition.top' (newVal) {
-      console.log('top: ', newVal)
       this.currentMoveItem.style.top.value = newVal
     },
     'wrapPosition.left' (newVal) {
-      console.log('left: ', newVal)
       this.currentMoveItem.style.left.value = newVal
+    },
+    page: {
+      handler (newVal) {
+        this.componentList = newVal.children
+        this.json = JSON.stringify(newVal, null, 2)
+      },
+      deep: true,
+      immediate: true
     }
   },
   mounted () {
     this.addDrag()
   },
   methods: {
+    ...mapActions({
+      updatePage: 'appModule/updatePage'
+    }),
     addDrag () {
       // 设置元素的放置行为——移动
       this.$refs.pageContent.addEventListener('dragenter', this.dragenter)
@@ -196,6 +214,10 @@ export default {
         this.componentList.push(params)
       }
 
+      this.page.children = this.componentList
+
+      this.updatePage(this.page)
+
       console.log('this.componentList: ', this.componentList)
     },
     deleteItem (item) {
@@ -244,14 +266,20 @@ export default {
     padding: 10px 20px;
     overflow: auto;
     .page-content {
-      width: 1200px;
-      height: 1200px;
-      min-height: 550px;
+      width: 100%;
+      height: 100%;
       background-color: #fff;
       box-sizing: border-box;
       overflow: auto;
       padding: 24px;
       position: relative;
+      &.selected {
+        border-width: 1px;
+        border-color: rgba(0, 137, 255, 1);
+        border-style: solid;
+        border-radius: 4px;
+      }
+
       .container-placeholder {
         min-height: 60px;
         height: 100%;

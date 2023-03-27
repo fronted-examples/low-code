@@ -30,9 +30,11 @@
               <label>{{option.label}}</label>
               <el-input v-if="option.type === 'text'"
                         v-model="option.value"
-                        :placeholder="option.placeholder"></el-input>
+                        :placeholder="option.placeholder"
+                        size="small"></el-input>
               <el-input-number v-if="option.type === 'number'"
-                               v-model="option.value"></el-input-number>
+                               v-model="option.value"
+                               size="small"></el-input-number>
 
               <el-select v-if="option.type === 'event'"
                          v-model="eventType"
@@ -121,6 +123,8 @@ export default {
           tab.options = newValue.advanced
         }
       })
+
+      console.log('tabList: ', this.tabList)
     }
   },
   methods: {
