@@ -1,7 +1,8 @@
 /**
  * 元素移动指令
  *
- * range 为true意味着元素可以任意摆放，为false只能在页面或者父元素内部摆放
+ * outRange 为true意味着元素可以任意摆放，为false只能在页面或者父元素内部摆放
+ * arg目前有三种取值undefined(不传)、left-top(左上角为原点)、left-bottom(左下角为原点)，用于更改transition动画的方向
  */
 const drag = {
   /**
@@ -9,8 +10,10 @@ const drag = {
    * 可执行插入节点操作
    * @param {*} el 节点
    */
-  inserted: function (el, { value, modifiers }) {
-    const { range } = modifiers
+  inserted: function (el, { value, modifiers, arg }) {
+    const { outRange } = modifiers
+
+    console.log('arg: ', arg)
 
     el.onmousedown = function (e) {
       el.style.position = 'absolute'
@@ -26,7 +29,7 @@ const drag = {
       document.onmousemove = function (e) {
         let x, y
 
-        if (!range) {
+        if (!outRange) {
           // e.pageX - disx  鼠标在页面上的位置 - 鼠标在元素中的偏移位置  得到的是元素相对于页面左上角的偏移位置
           if ((e.pageX - distanceX) > 0) { // 元素相对于页面左上角的偏移位置 大于0时
             if ((e.pageX - distanceX) > document.documentElement.clientWidth - el.clientWidth) { // 元素相对于页面左上角的偏移位置 移出到页面以外（右侧）
@@ -49,17 +52,33 @@ const drag = {
           }
         }
 
-        if (range) {
+        if (outRange) {
           x = e.pageX - distanceX
 
           y = e.pageY - distanceY
         }
 
-        el.style.left = x + 'px'
-        el.style.top = y + 'px'
+        /**
+         * 对应元素的定位方向要定位left,bottom
+         */
+        if (arg === 'left-bottom') {
+          el.style.left = x + 'px'
+          el.style.bottom = 'calc(100% - ' + (el.clientHeight + y) + 'px)'
 
-        value.top = y
-        value.left = x
+          value.left = x
+          value.bottom = 'calc(100% - ' + (el.clientHeight + y) + 'px)'
+        }
+
+        /**
+         * 对应元素的定位方向要定位为top,left
+         */
+        if (!arg || arg === 'left-top') {
+          el.style.left = x + 'px'
+          el.style.top = y + 'px'
+
+          value.top = y
+          value.left = x
+        }
 
         console.log(value)
       }

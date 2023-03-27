@@ -1,6 +1,6 @@
 <template>
   <section class="property-setting"
-           v-drag="position">
+           v-drag:[direction]="position">
 
     <div class="property-header">
       <el-tooltip class="item"
@@ -93,6 +93,7 @@ export default {
         top: 0,
         left: 0
       },
+      direction: 'left-bottom',
       visible: false,
       eventType: '',
       event: '',
@@ -176,8 +177,8 @@ export default {
   background-color: #fff;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
   position: absolute;
-  top: 0;
-  right: 0;
+  bottom: calc(100% - 500px);
+  left: calc(100% - 266px);
   overflow: auto;
   .property-header {
     display: flex;

@@ -211,6 +211,7 @@ export default {
   background-color: #fff;
   padding: 24px;
   box-sizing: border-box;
+  position: relative;
   .container-placeholder {
     min-height: 60px;
     height: 520px;
