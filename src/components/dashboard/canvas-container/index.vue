@@ -226,7 +226,7 @@ export default {
 
 <style lang="scss" scoped>
 .canvas-container {
-  width: calc(100% - 266px);
+  width: calc(100% - 532px);
   box-sizing: border-box;
   background-color: #f0f0f0;
   .container-operate {
@@ -237,10 +237,12 @@ export default {
     background-color: #fff;
   }
   .content-wrap {
+    width: 100%;
     box-sizing: border-box;
     padding: 10px 20px;
+    overflow: auto;
     .page-content {
-      width: 100%;
+      width: 1200px;
       min-height: 550px;
       background-color: #fff;
       box-sizing: border-box;

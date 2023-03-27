@@ -1,8 +1,6 @@
 <template>
-  <section class="property-setting"
-           v-drag:[direction].outRange="position">
-
-    <div class="property-header">
+  <section class="property-setting">
+    <!-- <div class="property-header">
       <el-tooltip class="item"
                   effect="dark"
                   :content="tooltipText"
@@ -10,7 +8,7 @@
         <svg-icon :icon-class="svgIconClass"
                   @click.stop="minimizeOrMaximize" />
       </el-tooltip>
-    </div>
+    </div> -->
 
     <div class="property-body">
       <div class="settings-notice"
@@ -126,30 +124,30 @@ export default {
     }
   },
   methods: {
-    minimizeOrMaximize () {
-      const modal = document.querySelector('.property-setting')
-      const modalHeader = document.querySelector('.property-header')
-      const modalBody = document.querySelector('.property-body')
+    // minimizeOrMaximize () {
+    //   const modal = document.querySelector('.property-setting')
+    //   const modalHeader = document.querySelector('.property-header')
+    //   const modalBody = document.querySelector('.property-body')
 
-      if (!this.minimized) {
-        modal.style.width = '80px'
-        modal.style.height = '48px'
-        modal.style.transition = 'width .3s, height .3s'
-        modalBody.style.display = 'none'
-        this.svgIconClass = 'maximize'
-        this.tooltipText = '最大化'
-        this.minimized = true
-      } else {
-        modal.style.width = '266px'
-        modal.style.height = '500px'
-        modal.style.transition = 'width .3s, height .3s'
-        modalHeader.style.display = 'flex'
-        modalBody.style.display = 'block'
-        this.svgIconClass = 'minimize'
-        this.tooltipText = '最小化'
-        this.minimized = false
-      }
-    },
+    //   if (!this.minimized) {
+    //     modal.style.width = '80px'
+    //     modal.style.height = '48px'
+    //     modal.style.transition = 'width .3s, height .3s'
+    //     modalBody.style.display = 'none'
+    //     this.svgIconClass = 'maximize'
+    //     this.tooltipText = '最大化'
+    //     this.minimized = true
+    //   } else {
+    //     modal.style.width = '266px'
+    //     modal.style.height = '500px'
+    //     modal.style.transition = 'width .3s, height .3s'
+    //     modalHeader.style.display = 'flex'
+    //     modalBody.style.display = 'block'
+    //     this.svgIconClass = 'minimize'
+    //     this.tooltipText = '最小化'
+    //     this.minimized = false
+    //   }
+    // },
     selectTab (tab, event) {
       console.log(tab, event)
     },
@@ -172,14 +170,10 @@ export default {
 <style lang="scss" scoped>
 .property-setting {
   width: 266px;
-  height: 500px;
+  height: 100vh;
   overflow-y: auto;
   background-color: #fff;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
-  position: absolute;
-  bottom: calc(100% - 500px);
-  left: calc(100% - 266px);
-  overflow: auto;
   .property-header {
     height: 48px;
     display: flex;

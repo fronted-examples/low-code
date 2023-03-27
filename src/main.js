@@ -12,6 +12,8 @@ import UITemplate from '@/templates/index'
 import Directives from './directives'
 
 import Plugins from '@/plugins/index'
+
+import '@/assets/styles/index.scss'
 import '@/icons'
 
 Vue.config.productionTip = false
