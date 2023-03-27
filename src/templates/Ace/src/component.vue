@@ -12,8 +12,9 @@
                      v-model="modePath"
                      @change="handleModelPathChange"
                      size="mini"
-                     value-key="name">
-            <el-option v-for="mode in modeArray"
+                     value-key="name"
+                     disabled>
+            <el-option v-for="mode in modeMap"
                        :key="mode.name"
                        :label="mode.name"
                        :value="mode.path">
@@ -24,11 +25,12 @@
         <div class="item">
           <label class="title">换行</label>
           <el-select class="value"
-                     v-model="wrap"
+                     v-model="wrapValue"
                      @change="handleWrapChange"
                      size="mini"
-                     value-key="name">
-            <el-option v-for="wrap in wrapArray"
+                     value-key="name"
+                     disabled>
+            <el-option v-for="wrap in wrapMap"
                        :key="wrap.name"
                        :label="wrap.name"
                        :value="wrap.value">
@@ -57,139 +59,6 @@ import 'ace-builds/src-noconflict/ext-language_tools'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/mode-javascript'
 
-// const themeArray = [{
-//   name: 'ambiance',
-//   path: 'ace/theme/ambiance'
-// }, {
-//   name: 'chaos',
-//   path: 'ace/theme/chaos'
-// }, {
-//   name: 'chrome',
-//   path: 'ace/theme/chrome'
-// }, {
-//   name: 'cloud9_day',
-//   path: 'ace/theme/cloud9_day'
-// }, {
-//   name: 'cloud9_night_low_color',
-//   path: 'ace/theme/cloud9_night_low_color'
-// }, {
-//   name: 'cloud9_night',
-//   path: 'ace/theme/cloud9_night'
-// }, {
-//   name: 'clouds_midnight',
-//   path: 'ace/theme/clouds_midnight'
-// }, {
-//   name: 'clouds',
-//   path: 'ace/theme/clouds'
-// }, {
-//   name: 'cobalt',
-//   path: 'ace/theme/cobalt'
-// }, {
-//   name: 'crimson_editor',
-//   path: 'ace/theme/crimson_editor'
-// }, {
-//   name: 'dawn',
-//   path: 'ace/theme/dawn'
-// }, {
-//   name: 'dracula',
-//   path: 'ace/theme/dracula'
-// }, {
-//   name: 'dreamweaver',
-//   path: 'ace/theme/dreamweaver'
-// }, {
-//   name: 'eclipse',
-//   path: 'ace/theme/eclipse'
-// }, {
-//   name: 'github',
-//   path: 'ace/theme/github'
-// }, {
-//   name: 'gob',
-//   path: 'ace/theme/gob'
-// }, {
-//   name: 'gruvbox_dark_hard',
-//   path: 'ace/theme/gruvbox_dark_hard'
-// }, {
-//   name: 'gruvbox_light_hard',
-//   path: 'ace/theme/gruvbox_light_hard'
-// }, {
-//   name: 'gruvbox',
-//   path: 'ace/theme/gruvbox'
-// }, {
-//   name: 'idle_fingers',
-//   path: 'ace/theme/idle_fingers'
-// }, {
-//   name: 'iplastic',
-//   path: 'ace/theme/iplastic'
-// }, {
-//   name: 'katzenmilch',
-//   path: 'ace/theme/katzenmilch'
-// }, {
-//   name: 'kr_theme',
-//   path: 'ace/theme/kr_theme'
-// }, {
-//   name: 'kuroir',
-//   path: 'ace/theme/kuroir'
-// }, {
-//   name: 'merbivore_soft',
-//   path: 'ace/theme/merbivore_soft'
-// }, {
-//   name: 'merbivore',
-//   path: 'ace/theme/merbivore'
-// }, {
-//   name: 'mono_industrial',
-//   path: 'ace/theme/mono_industrial'
-// }, {
-//   name: 'monokai',
-//   path: 'ace/theme/monokai'
-// }, {
-//   name: 'nord_dark',
-//   path: 'ace/theme/nord_dark'
-// }, {
-//   name: 'one_dark',
-//   path: 'ace/theme/one_dark'
-// }, {
-//   name: 'pastel_on_dark',
-//   path: 'ace/theme/pastel_on_dark'
-// }, {
-//   name: 'solarized_dark',
-//   path: 'ace/theme/solarized_dark'
-// }, {
-//   name: 'solarized_light',
-//   path: 'ace/theme/solarized_light'
-// }, {
-//   name: 'sqlserver',
-//   path: 'ace/theme/sqlserver'
-// }, {
-//   name: 'terminal',
-//   path: 'ace/theme/terminal'
-// }, {
-//   name: 'textmate',
-//   path: 'ace/theme/textmate'
-// }, {
-//   name: 'tomorrow_night_blue',
-//   path: 'ace/theme/tomorrow_night_blue'
-// }, {
-//   name: 'tomorrow_night_bright',
-//   path: 'ace/theme/tomorrow_night_bright'
-// }, {
-//   name: 'tomorrow_night_eighties',
-//   path: 'ace/theme/tomorrow_night_eighties'
-// }, {
-//   name: 'tomorrow_night',
-//   path: 'ace/theme/tomorrow_night'
-// }, {
-//   name: 'tomorrow',
-//   path: 'ace/theme/tomorrow'
-// }, {
-//   name: 'twilight',
-//   path: 'ace/theme/twilight'
-// }, {
-//   name: 'vibrant_ink',
-//   path: 'ace/theme/vibrant_ink'
-// }, {
-//   name: 'xcode',
-//   path: 'ace/theme/xcode'
-// }]
 const themeMap = {
   ambiance: {
     name: 'ambiance',
@@ -369,44 +238,80 @@ const themeMap = {
   }
 }
 
-const wrapArray = [{
-  name: '开启',
-  value: true
-}, {
-  name: '关闭',
-  value: false
-}]
+const wrapMap = {
+  open: {
+    name: '开启',
+    value: true
+  },
+  close: {
+    name: '关闭',
+    value: false
+  }
+}
 
-const modeArray = [{
-  name: 'JavaScript',
-  path: 'ace/mode/javascript'
-}, {
-  name: 'HTML',
-  path: 'ace/mode/html'
-}, {
-  name: 'CSS',
-  path: 'ace/mode/css'
-}, {
-  name: 'SCSS',
-  path: 'ace/mode/scss'
-}, {
-  name: 'Json',
-  path: 'ace/mode/json'
-}, {
-  name: 'Java',
-  path: 'ace/mode/java'
-}, {
-  name: 'Text',
-  path: 'ace/mode/text'
-}]
+const modeMap = {
+  JavaScript: {
+    name: 'JavaScript',
+    path: 'ace/mode/javascript'
+  },
+  HTML: {
+    name: 'HTML',
+    path: 'ace/mode/html'
+  },
+  CSS: {
+    name: 'CSS',
+    path: 'ace/mode/css'
+  },
+  SCSS: {
+    name: 'SCSS',
+    path: 'ace/mode/scss'
+  },
+  JSON: {
+    name: 'JSON',
+    path: 'ace/mode/json'
+  },
+  Java: {
+    name: 'Java',
+    path: 'ace/mode/java'
+  },
+  Text: {
+    name: 'Text',
+    path: 'ace/mode/text'
+  }
+}
 
 export default {
   name: 'Ace',
   props: {
-    value: String,
+    value: [String, Object],
+    readOnly: Boolean,
     theme: {
       type: String,
       default: 'monokai'
+    },
+    mode: {
+      type: String,
+      default: 'JavaScript'
+    },
+    wrap: {
+      type: String,
+      default: 'open'
+    }
+  },
+  data () {
+    return {
+      aceEditor: null,
+      toggle: false,
+      wrapValue: wrapMap[this.wrap].value,
+      themePath: themeMap[this.theme].path,
+      modePath: modeMap[this.mode].path,
+      modeMap: modeMap,
+      wrapMap: wrapMap
+    }
+  },
+  computed: {
+    disabled () {
+      return this.readOnly
     }
   },
   mounted () {
@@ -417,8 +322,9 @@ export default {
       value: this.value ? this.value : '',
       theme: this.themePath,
       mode: this.modePath,
-      wrap: this.wrap,
-      tabSize: 4
+      wrap: this.wrapValue,
+      tabSize: 4,
+      readOnly: this.readOnly
     })
     // 激活自动提示
     this.aceEditor.setOptions({
@@ -427,17 +333,6 @@ export default {
       enableBasicAutocompletion: true
     })
     this.aceEditor.getSession().on('change', this.change)
-  },
-  data () {
-    return {
-      aceEditor: null,
-      toggle: false,
-      wrap: true,
-      themePath: themeMap[this.theme].path,
-      modePath: 'ace/mode/javascript',
-      modeArray: modeArray,
-      wrapArray: wrapArray
-    }
   },
   methods: {
     toggleConfigPanel () {

@@ -1,7 +1,8 @@
 <template>
   <section class="canvas-container"
            ref="canvasContainer">
-    <el-button type="text">查看json</el-button>
+    <el-button type="text"
+               @click="readJson">查看json</el-button>
     <div v-if="!componentList.length"
          class="container-placeholder">拖拽组件或模板到这里</div>
 
@@ -78,7 +79,9 @@
     <el-dialog title="查看json"
                :visible.sync="visible">
       <ace v-model="json"
-           theme="kuroir" />
+           theme="kuroir"
+           read-only
+           mode="JSON" />
     </el-dialog>
   </section>
 </template>
@@ -102,7 +105,13 @@ export default {
         left: 0
       },
       visible: false,
-      json: {}
+      json: JSON.stringify({
+        name: '1',
+        value: {
+          name: 2,
+          value: 3
+        }
+      }, null, 2)
     }
   },
   watch: {
@@ -199,6 +208,9 @@ export default {
       console.log('item: ', item)
       this.currentMoveItem = item
       this.$emit('selectComponent', item)
+    },
+    readJson () {
+      this.visible = true
     }
   }
 }
