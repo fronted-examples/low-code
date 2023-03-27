@@ -7,16 +7,18 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import '@/icons'
-
 import UITemplate from '@/templates/index'
 
 import Directives from './directives'
+
+import Plugins from '@/plugins/index'
+import '@/icons'
 
 Vue.config.productionTip = false
 
 Vue.use(UITemplate)
 Vue.use(Directives)
+Vue.use(Plugins)
 Vue.use(ElementUI)
 
 /* eslint-disable no-new */

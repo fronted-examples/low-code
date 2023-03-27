@@ -1,88 +1,96 @@
 <template>
-  <section class="canvas-container"
-           ref="canvasContainer">
-    <el-button type="text"
-               @click="readJson">查看json</el-button>
-    <div v-if="!componentList.length"
-         class="container-placeholder">拖拽组件或模板到这里</div>
+  <section class="canvas-container">
+    <div class="container-operate">
+      <el-button type="text"
+                 icon="el-icon-view"
+                 @click="readJson">查看json</el-button>
+    </div>
 
-    <div class="component-wrap"
-         v-for="item in componentList"
-         :id="item.id"
-         :key="item.id"
-         :ref="item.id"
-         :style="{
+    <div class="content-wrap">
+      <section class="page-content"
+               ref="pageContent">
+        <div v-if="!componentList.length"
+             class="container-placeholder">拖拽组件或模板到这里</div>
+
+        <div class="component-wrap"
+             v-for="item in componentList"
+             :id="item.id"
+             :key="item.id"
+             :ref="item.id"
+             :style="{
           top: `${item.style.top.value}px`,
           left: `${item.style.left.value}px`,
           'z-index': `${item.style.zIndex.value}`
         }"
-         v-drag="wrapPosition"
-         :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"
-         @mousedown.stop="selectItem(item)">
-      <span class="component-operate"
-            v-if="currentMoveItem && currentMoveItem.id === item.id">
-        <svg-icon icon-class="delete"
-                  @mousedown.stop
-                  @click.stop="deleteItem(item)" />
-      </span>
-      <template v-if="item.code === 'Input'">
-        <input-component />
-      </template>
+             v-drag="wrapPosition"
+             :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"
+             @mousedown.stop="selectItem(item)">
+          <span class="component-operate"
+                v-if="currentMoveItem && currentMoveItem.id === item.id">
+            <svg-icon icon-class="delete"
+                      @mousedown.stop
+                      @click.stop="deleteItem(item)" />
+          </span>
+          <template v-if="item.code === 'Input'">
+            <input-component />
+          </template>
 
-      <template v-if="item.code === 'Textarea'">
-        <el-input type="textarea"
-                  readonly></el-input>
-      </template>
+          <template v-if="item.code === 'Textarea'">
+            <el-input type="textarea"
+                      readonly></el-input>
+          </template>
 
-      <template v-if="item.code === 'Button'">
-        <input type="button"
-               disabled
-               value="按钮" />
-      </template>
+          <template v-if="item.code === 'Button'">
+            <input type="button"
+                   disabled
+                   value="按钮" />
+          </template>
 
-      <div class="component-wrap"
-           v-for="child in item.children"
-           :id="child.id"
-           :key="child.id"
-           :ref="child.id"
-           :style="{
+          <div class="component-wrap"
+               v-for="child in item.children"
+               :id="child.id"
+               :key="child.id"
+               :ref="child.id"
+               :style="{
           top: `${child.style.top.value}px`,
           left: `${child.style.left.value}px`,
           'z-index': `${child.style.zIndex.value}`
         }"
-           :class="[currentMoveItem && currentMoveItem.id === child.id ? 'selected' : '']"
-           v-drag.outRange="wrapPosition"
-           @mousedown.stop="selectItem(child)">
-        <span class="component-operate"
-              v-if="currentMoveItem && currentMoveItem.id === child.id">
-          <svg-icon icon-class="delete"
-                    @mousedown.stop
-                    @click.stop="deleteItem(child)" />
-        </span>
-        <template v-if="child.code === 'Input'">
-          <input-component />
-        </template>
+               :class="[currentMoveItem && currentMoveItem.id === child.id ? 'selected' : '']"
+               v-drag.outRange="wrapPosition"
+               @mousedown.stop="selectItem(child)">
+            <span class="component-operate"
+                  v-if="currentMoveItem && currentMoveItem.id === child.id">
+              <svg-icon icon-class="delete"
+                        @mousedown.stop
+                        @click.stop="deleteItem(child)" />
+            </span>
+            <template v-if="child.code === 'Input'">
+              <input-component />
+            </template>
 
-        <template v-if="child.code === 'Textarea'">
-          <el-input type="textarea"
-                    readonly></el-input>
-        </template>
+            <template v-if="child.code === 'Textarea'">
+              <el-input type="textarea"
+                        readonly></el-input>
+            </template>
 
-        <template v-if="child.code === 'Button'">
-          <input type="button"
-                 disabled
-                 value="按钮" />
-        </template>
-      </div>
+            <template v-if="child.code === 'Button'">
+              <input type="button"
+                     disabled
+                     value="按钮" />
+            </template>
+          </div>
+        </div>
+
+        <el-dialog title="查看json"
+                   :visible.sync="visible">
+          <ace v-model="json"
+               theme="kuroir"
+               read-only
+               mode="JSON" />
+        </el-dialog>
+      </section>
     </div>
-
-    <el-dialog title="查看json"
-               :visible.sync="visible">
-      <ace v-model="json"
-           theme="kuroir"
-           read-only
-           mode="JSON" />
-    </el-dialog>
   </section>
 </template>
 
@@ -130,19 +138,19 @@ export default {
   methods: {
     addDrag () {
       // 设置元素的放置行为——移动
-      this.$refs.canvasContainer.addEventListener('dragenter', this.dragenter)
+      this.$refs.pageContent.addEventListener('dragenter', this.dragenter)
       // 在目标元素经过 必须要阻止默认行为 否则不能触发drop
-      this.$refs.canvasContainer.addEventListener('dragover', this.dragover)
+      this.$refs.pageContent.addEventListener('dragover', this.dragover)
       // 离开目标元素时设置元素的放置行为——不能拖放
-      this.$refs.canvasContainer.addEventListener('dragleave', this.dragleave)
+      this.$refs.pageContent.addEventListener('dragleave', this.dragleave)
       // 拖动元素在目标元素松手时添加元素到画布
-      this.$refs.canvasContainer.addEventListener('drop', this.drop)
+      this.$refs.pageContent.addEventListener('drop', this.drop)
     },
     removeDrag () {
-      this.$refs.canvasContainer.removeEventListener('dragenter', this.dragenter)
-      this.$refs.canvasContainer.removeEventListener('dragover', this.dragover)
-      this.$refs.canvasContainer.removeEventListener('dragleave', this.dragleave)
-      this.$refs.canvasContainer.removeEventListener('drop', this.drop)
+      this.$refs.pageContent.removeEventListener('dragenter', this.dragenter)
+      this.$refs.pageContent.removeEventListener('dragover', this.dragover)
+      this.$refs.pageContent.removeEventListener('dragleave', this.dragleave)
+      this.$refs.pageContent.removeEventListener('drop', this.drop)
     },
     dragenter (e) {
       e.dataTransfer.dropEffect = 'move'
@@ -218,69 +226,85 @@ export default {
 
 <style lang="scss" scoped>
 .canvas-container {
-  width: calc(100vw - 266px);
-  min-height: 560px;
-  background-color: #fff;
-  padding: 24px;
+  width: calc(100% - 266px);
   box-sizing: border-box;
-  position: relative;
-  .container-placeholder {
-    min-height: 60px;
-    height: 520px;
-    width: 100%;
-    background-color: #f0f0f0;
-    border: 1px dotted;
-    color: #a7b1bd;
+  background-color: #f0f0f0;
+  .container-operate {
     display: flex;
-    -ms-flex-align: center;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-  }
-
-  .component-wrap {
-    position: absolute;
+    justify-content: flex-end;
     box-sizing: border-box;
-    border: 1px solid transparent;
-    &:hover {
-      border-width: 1px;
-      border-color: rgba(0, 137, 255, 1);
-      border-style: dashed;
-    }
+    padding: 0 24px;
+    background-color: #fff;
+  }
+  .content-wrap {
+    box-sizing: border-box;
+    padding: 10px 20px;
+    .page-content {
+      width: 100%;
+      min-height: 550px;
+      background-color: #fff;
+      box-sizing: border-box;
+      overflow: auto;
+      padding: 24px;
+      position: relative;
+      .container-placeholder {
+        min-height: 60px;
+        height: 500px;
+        width: 100%;
+        background-color: #f0f0f0;
+        box-sizing: border-box;
+        border: 1px dotted;
+        color: #a7b1bd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+      .component-wrap {
+        position: absolute;
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        &:hover {
+          border-width: 1px;
+          border-color: rgba(0, 137, 255, 1);
+          border-style: dashed;
+        }
 
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: transparent;
-      cursor: default;
-    }
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: transparent;
+          cursor: default;
+        }
 
-    &.selected {
-      border-width: 1px;
-      border-color: rgba(0, 137, 255, 1);
-      border-style: solid;
-      border-radius: 4px;
-    }
+        &.selected {
+          border-width: 1px;
+          border-color: rgba(0, 137, 255, 1);
+          border-style: solid;
+          border-radius: 4px;
+        }
 
-    .component-operate {
-      display: inline-block;
-      height: 20px;
-      background-color: rgba(0, 137, 255, 1);
-      position: absolute;
-      top: -22px;
-      right: 0;
+        .component-operate {
+          display: inline-block;
+          height: 20px;
+          background-color: rgba(0, 137, 255, 1);
+          position: absolute;
+          top: -22px;
+          right: 0;
 
-      pointer-events: none;
-      cursor: default;
+          pointer-events: none;
+          cursor: default;
 
-      .svg-icon {
-        color: #fff;
-        cursor: pointer;
-        pointer-events: auto;
+          .svg-icon {
+            color: #fff;
+            cursor: pointer;
+            pointer-events: auto;
+          }
+        }
       }
     }
   }

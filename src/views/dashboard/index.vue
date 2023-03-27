@@ -235,7 +235,9 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard {
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  flex-shrink: 1;
 }
 </style>
