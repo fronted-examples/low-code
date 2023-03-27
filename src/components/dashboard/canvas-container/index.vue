@@ -230,6 +230,7 @@ export default {
   box-sizing: border-box;
   background-color: #f0f0f0;
   .container-operate {
+    height: 48px;
     display: flex;
     justify-content: flex-end;
     box-sizing: border-box;
@@ -238,11 +239,13 @@ export default {
   }
   .content-wrap {
     width: 100%;
+    height: calc(100vh - 48px);
     box-sizing: border-box;
     padding: 10px 20px;
     overflow: auto;
     .page-content {
       width: 1200px;
+      height: 1200px;
       min-height: 550px;
       background-color: #fff;
       box-sizing: border-box;
@@ -251,7 +254,7 @@ export default {
       position: relative;
       .container-placeholder {
         min-height: 60px;
-        height: 500px;
+        height: 100%;
         width: 100%;
         background-color: #f0f0f0;
         box-sizing: border-box;
