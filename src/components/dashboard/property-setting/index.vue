@@ -1,6 +1,6 @@
 <template>
   <section class="property-setting"
-           v-drag:[direction]="position">
+           v-drag:[direction].outRange="position">
 
     <div class="property-header">
       <el-tooltip class="item"
@@ -133,7 +133,7 @@ export default {
 
       if (!this.minimized) {
         modal.style.width = '80px'
-        modal.style.height = '30px'
+        modal.style.height = '48px'
         modal.style.transition = 'width .3s, height .3s'
         modalBody.style.display = 'none'
         this.svgIconClass = 'maximize'
@@ -181,10 +181,12 @@ export default {
   left: calc(100% - 266px);
   overflow: auto;
   .property-header {
+    height: 48px;
     display: flex;
     justify-content: flex-end;
-    padding: 10px 20px 0 20px;
+    align-items: center;
     box-sizing: border-box;
+    padding: 0 20px;
     .svg-icon {
       cursor: pointer;
     }

@@ -50,7 +50,7 @@
           'z-index': `${child.style.zIndex.value}`
         }"
            :class="[currentMoveItem && currentMoveItem.id === child.id ? 'selected' : '']"
-           v-drag.range="wrapPosition"
+           v-drag.outRange="wrapPosition"
            @mousedown.stop="selectItem(child)">
         <span class="component-operate"
               v-if="currentMoveItem && currentMoveItem.id === child.id">
