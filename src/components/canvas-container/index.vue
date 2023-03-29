@@ -1,8 +1,7 @@
 <template>
   <section class="canvas-container">
     <div class="container-operate">
-      <el-button type="text"
-                 icon="el-icon-view"
+      <el-button type="text" icon="el-icon-view"
                  @click="readJson">查看json</el-button>
     </div>
 
@@ -13,7 +12,8 @@
                :class="[currentMoveItem && currentMoveItem.id === page.id ? 'selected' : '']"
                @mousedown.stop="selectItem(page)">
         <div v-if="!componentList.length"
-             class="container-placeholder">拖拽组件或模板到这里</div>
+             class="container-placeholder">
+          拖拽组件或模板到这里</div>
 
         <recursion-component :list="page.children"
                              read-only
@@ -90,10 +90,8 @@
 
         <el-dialog title="查看json"
                    :visible.sync="visible">
-          <ace v-model="json"
-               theme="kuroir"
-               read-only
-               mode="JSON" />
+          <ace v-model="json" theme="kuroir"
+               read-only mode="JSON" />
         </el-dialog>
       </section>
     </div>
@@ -202,14 +200,18 @@ export default {
       this.currentMoveItem = params
       this.$emit('selectComponent', params)
 
-      let flag = false
+      let flag = this.recursionFindListItem(this.componentList, params, e.toElement.id)
 
-      for (let i = 0; i < this.componentList.length; i++) {
-        if (e.toElement.id === this.componentList[i].id) {
-          this.componentList[i].children.push(params)
-          flag = true
-        }
-      }
+      console.log('flag: ', flag)
+
+      // let flag = false
+
+      // for (let i = 0; i < this.componentList.length; i++) {
+      //   if (e.toElement.id === this.componentList[i].id) {
+      //     this.componentList[i].children.push(params)
+      //     flag = true
+      //   }
+      // }
 
       if (!flag) {
         this.componentList.push(params)
@@ -220,6 +222,21 @@ export default {
       this.updatePage(this.page)
 
       console.log('this.componentList: ', this.componentList)
+    },
+    recursionFindListItem (array, findItem, findId) {
+      let flag = false
+      if (array.length) {
+        for (let i = 0; i < array.length; i++) {
+          if (array[i].id === findId) {
+            flag = true
+            array[i].children.push(findItem)
+          } else if (array[i].children) {
+            this.recursionDeleteListItem(array[i].children, findItem, findId)
+          }
+        }
+      }
+
+      return flag
     },
     deleteComponent (item) {
       this.recursionDeleteListItem(this.componentList, item)
