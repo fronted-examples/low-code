@@ -11,9 +11,13 @@ const drag = {
    * @param {*} el 节点
    */
   inserted: function (el, { value, modifiers, arg }) {
-    const { outRange } = modifiers
+    const { outRange, disabled } = modifiers
 
-    console.log('arg: ', arg)
+    console.log('arg: ', modifiers)
+
+    if (disabled) {
+      return
+    }
 
     el.onmousedown = function (e) {
       el.style.position = 'absolute'
@@ -65,6 +69,10 @@ const drag = {
           el.style.left = x + 'px'
           el.style.bottom = 'calc(100% - ' + (el.clientHeight + y) + 'px)'
 
+          if (!value) {
+            return
+          }
+
           value.left = x
           value.bottom = 'calc(100% - ' + (el.clientHeight + y) + 'px)'
         }
@@ -76,11 +84,15 @@ const drag = {
           el.style.left = x + 'px'
           el.style.top = y + 'px'
 
+          if (!value) {
+            return
+          }
+
           value.top = y
           value.left = x
         }
 
-        console.log(value)
+        // console.log(value)
       }
     }
 

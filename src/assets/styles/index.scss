@@ -1,3 +1,51 @@
+/* flex布局常用样式 start */
+.flex-row {
+  display: flex !important;
+}
+
+.flex-inline {
+  display: inline-flex !important;
+}
+
+.flex-inline-column {
+  display: inline-flex !important;
+  flex-direction: column !important;
+}
+
+.flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.main-start {
+  justify-content: flex-start !important;
+}
+
+.main-center {
+  justify-content: center !important;
+}
+
+.main-end {
+  justify-content: flex-end !important;
+}
+
+.main-between {
+  justify-content: space-between !important;
+}
+
+.secondary-start {
+  align-items: flex-start !important;
+}
+
+.secondary-center {
+  align-items: center !important;
+}
+
+.secondary-end {
+  align-items: flex-end !important;
+}
+/* flex布局常用样式 end */
+
 /* 在全局CSS里引用: */
 /* 滚动条宽度 */
 ::-webkit-scrollbar {

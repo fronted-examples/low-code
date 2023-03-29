@@ -6,18 +6,19 @@
                  @click="readJson">查看json</el-button>
     </div>
 
-    <RecursionComponent :data="page.children"></RecursionComponent>
-
     <div class="content-wrap">
       <section class="page-content"
                ref="pageContent"
-               :style="{minWidth: page.style.minWidth.value + 'px', minHeight: page.style.minHeight.value + 'px'}"
+               :style="{minWidth: page.style.minWidth.value + 'px', minHeight: page.style.minHeight.value + 'px', backgroundColor: page.style.backgroundColor.value}"
                :class="[currentMoveItem && currentMoveItem.id === page.id ? 'selected' : '']"
                @mousedown.stop="selectItem(page)">
         <div v-if="!componentList.length"
              class="container-placeholder">拖拽组件或模板到这里</div>
 
-        <div class="component-wrap"
+        <recursion-component :list="page.children"
+                             read-only
+                             @deleteComponent="deleteComponent" />
+        <!-- <div class="component-wrap"
              v-for="item in componentList"
              :id="item.id"
              :key="item.id"
@@ -27,7 +28,7 @@
           left: `${item.style.left.value}px`,
           'z-index': `${item.style.zIndex.value}`
         }"
-             v-drag="wrapPosition"
+             v-drag.outRange="wrapPosition"
              :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"
              @mousedown.stop="selectItem(item)">
           <span class="component-operate"
@@ -85,7 +86,7 @@
                      value="按钮" />
             </template>
           </div>
-        </div>
+        </div> -->
 
         <el-dialog title="查看json"
                    :visible.sync="visible">
@@ -220,7 +221,7 @@ export default {
 
       console.log('this.componentList: ', this.componentList)
     },
-    deleteItem (item) {
+    deleteComponent (item) {
       this.recursionDeleteListItem(this.componentList, item)
     },
     recursionDeleteListItem (array, deleteItem) {
@@ -248,7 +249,8 @@ export default {
 
 <style lang="scss" scoped>
 .canvas-container {
-  width: calc(100% - 532px);
+  width: calc(100% - 566px);
+  height: 100%;
   box-sizing: border-box;
   background-color: #f0f0f0;
   .container-operate {
@@ -261,7 +263,7 @@ export default {
   }
   .content-wrap {
     width: 100%;
-    height: calc(100vh - 48px);
+    height: calc(100% - 48px);
     box-sizing: border-box;
     padding: 10px 20px;
     overflow: auto;

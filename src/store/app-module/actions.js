@@ -3,8 +3,8 @@ import { buildPage } from './util'
 
 const actions = {
   [CREATE_PAGE]: (context, payload) => {
-    const { id, name, props, style, advanced, children } = payload
-    const page = buildPage(id, name, props, style, advanced, children)
+    const { id, name, model, props, style, advanced, children } = payload
+    const page = buildPage(id, name, model, props, style, advanced, children)
     context.commit(CREATE_PAGE, page)
   },
   [UPDATE_PAGE]: (context, payload) => {

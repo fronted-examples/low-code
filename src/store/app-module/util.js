@@ -8,10 +8,11 @@
  * @param {Array} children
  * @returns {Object}
  */
-export function buildPage (id, code, props, style, advanced, children) {
+export function buildPage (id, code, model, props, style, advanced, children) {
   const page = {
     id: id,
     code: code,
+    model: model ? { ...model } : {},
     props: props ? { ...props } : {},
     style: style ? { ...style } : {},
     advanced: advanced ? { ...advanced } : {},

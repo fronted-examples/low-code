@@ -1,5 +1,5 @@
 const state = {
-  app: {},
+  app: [],
   page: null
 }
 

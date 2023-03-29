@@ -36,6 +36,17 @@
                                v-model="option.value"
                                size="small"></el-input-number>
 
+              <el-input v-if="option.type === 'color'"
+                        v-model="option.value"
+                        placeholder="颜色">
+                <el-color-picker slot="append"
+                                 v-model="option.value"
+                                 show-alpha
+                                 color-format="rgb"
+                                 size="mini">
+                </el-color-picker>
+              </el-input>
+
               <el-select v-if="option.type === 'event'"
                          v-model="eventType"
                          @change="selectEventType"
@@ -173,11 +184,13 @@ export default {
 
 <style lang="scss" scoped>
 .property-setting {
-  width: 266px;
-  height: 100vh;
+  width: 300px;
+  height: 100%;
   overflow-y: auto;
   background-color: #fff;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+  // 单纯左边有阴影
+  box-shadow: -10px 0px 8px -8px rgba(0, 0, 0, 0.15);
+  z-index: 1;
   .property-header {
     height: 48px;
     display: flex;
@@ -206,6 +219,19 @@ export default {
     .el-tabs {
       padding: 0 20px;
       height: 100%;
+
+      .el-input {
+        width: 200px;
+      }
+
+      >>> .el-input-group__append {
+        padding: 0;
+      }
+
+      >>> .el-color-picker__color,
+      >>> .el-color-picker__trigger {
+        border: none;
+      }
     }
   }
 }

@@ -1,35 +1,55 @@
 <template>
   <section class="dashboard">
-    <!-- <section class="operate">
-      <el-button @click="preview">预览</el-button>
-      <el-button type="primary">保存</el-button>
-    </section> -->
-    <component-library :component-list="components"
-                       @dragItemStart="dragItemStart" />
-    <canvas-container :component="component"
-                      @selectComponent="selectComponent" />
-    <property-setting :component="component" />
+    <section class="dashboard-header">
+      <el-button @click="preview"
+                 size="mini">预览</el-button>
+      <el-button type="primary"
+                 size="mini">保存</el-button>
+    </section>
+
+    <section class="dashboard-body">
+      <component-library :component-list="components"
+                         @dragItemStart="dragItemStart" />
+      <canvas-container :component="component"
+                        @selectComponent="selectComponent" />
+      <property-setting :component="component" />
+    </section>
+
+    <preview-page :visible.sync="prePageVisible">
+      <div class="page-content"
+           ref="pageContent"
+           style="position: relative;"
+           :style="{minWidth: page.style.minWidth.value + 'px', minHeight: page.style.minHeight.value + 'px', backgroundColor: page.style.backgroundColor.value}">
+        <recursion-component :list="page.children"
+                             disabled></recursion-component>
+      </div>
+    </preview-page>
   </section>
 </template>
 
 <script>
-import CanvasContainer from '@/components/dashboard/canvas-container'
-import ComponentLibrary from '@/components/dashboard/component-library'
-import PropertySetting from '@/components/dashboard/property-setting'
+import CanvasContainer from '@/components/canvas-container'
+import ComponentLibrary from '@/components/component-library'
+import PropertySetting from '@/components/property-setting'
 
-import { mapActions } from 'vuex'
+import RecursionComponent from '@/components/recursion-component'
+import PreviewPage from '@/components/preview-page'
+
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
   components: {
     CanvasContainer,
     ComponentLibrary,
-    PropertySetting
+    PropertySetting,
+    RecursionComponent,
+    PreviewPage
   },
   data () {
     return {
       components: [{
-        code: 'Input',
+        code: 'InputComponent',
         name: '输入框',
         icon: 'input',
         children: [],
@@ -212,14 +232,13 @@ export default {
         },
         advanced: {}
       }],
+      prePageVisible: false,
       component: null,
       content: ''
     }
   },
-  watch: {
-    content (newVal) {
-      console.log('ace content：', newVal)
-    }
+  computed: {
+    ...mapGetters('appModule', ['page'])
   },
   created () {
     this.createPage({
@@ -239,6 +258,13 @@ export default {
           value: 1200,
           required: false,
           unit: 'px'
+        },
+        backgroundColor: {
+          type: 'color',
+          label: '背景色',
+          value: '#fff',
+          required: false,
+          unit: ''
         }
       }
     })
@@ -254,7 +280,7 @@ export default {
       this.component = item
     },
     preview () {
-
+      this.prePageVisible = true
     }
   }
 }
@@ -262,7 +288,19 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard {
-  display: flex;
-  justify-content: space-between;
+  .dashboard-header {
+    height: 52px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  }
+  .dashboard-body {
+    display: flex;
+    justify-content: space-between;
+    height: calc(100vh - 52px);
+  }
 }
 </style>

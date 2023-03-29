@@ -12,6 +12,7 @@ import UITemplate from '@/templates/index'
 import Directives from './directives'
 
 import Plugins from '@/plugins/index'
+import Fragment from 'vue-fragment'
 
 import '@/assets/styles/index.scss'
 import '@/icons'
@@ -21,6 +22,7 @@ Vue.config.productionTip = false
 Vue.use(UITemplate)
 Vue.use(Directives)
 Vue.use(Plugins)
+Vue.use(Fragment.Plugin)
 Vue.use(ElementUI)
 
 /* eslint-disable no-new */

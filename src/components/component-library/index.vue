@@ -49,10 +49,11 @@ export default {
 <style lang="scss" scoped>
 .component-library {
   width: 266px;
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
   background-color: #fff;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+  // 单纯右边有阴影
+  box-shadow: 6px 0px 4px -4px rgba(0, 0, 0, 0.15);
   /* 父元素设置了flex,zIndex>0,box-shadow在非position为relative、absolute、fixed情况下才会生效 */
   z-index: 1;
   .header {
