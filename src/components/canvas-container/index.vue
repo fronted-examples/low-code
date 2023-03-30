@@ -1,8 +1,7 @@
 <template>
   <section class="canvas-container">
     <div class="container-operate">
-      <el-button type="text"
-                 icon="el-icon-view"
+      <el-button type="text" icon="el-icon-view"
                  @click="readJson">查看json</el-button>
     </div>
 
@@ -17,14 +16,13 @@
 
         <recursion-component :list="treeList"
                              read-only
+                             :page="page"
                              @deleteComponent="deleteComponent" />
 
         <el-dialog title="查看json"
                    :visible.sync="visible">
-          <ace v-model="json"
-               theme="kuroir"
-               read-only
-               mode="JSON" />
+          <ace v-model="json" theme="kuroir"
+               read-only mode="JSON" />
         </el-dialog>
       </section>
     </div>
