@@ -1,5 +1,5 @@
 import { CREATE_PAGE, UPDATE_PAGE, DELETE_PAGE } from './constants'
-import { deepCopy } from '@/utils/index'
+import { deepCopyObject } from '@/utils/index'
 
 const mutations = {
   [CREATE_PAGE]: (state, payload) => {
@@ -15,7 +15,7 @@ const mutations = {
     if (!flag) {
       const param = {
         id: state.page.id,
-        page: deepCopy(state.page)
+        page: deepCopyObject(state.page)
       }
 
       state.app.push(param)

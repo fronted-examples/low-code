@@ -1,4 +1,4 @@
-export function deepCopy (data, hash = new WeakMap()) {
+export function deepCopyObject (data, hash = new WeakMap()) {
   if (typeof data !== 'object' || data === null) {
     throw new TypeError('传入参数不是对象')
   }
@@ -26,8 +26,22 @@ export function deepCopy (data, hash = new WeakMap()) {
       // 将这个待拷贝对象的引用存于hash中
       hash.set(data, data)
       // 普通对象则递归赋值
-      newData[value] = deepCopy(currentDataValue, hash)
+      newData[value] = deepCopyObject(currentDataValue, hash)
     }
   })
   return newData
+}
+
+export function deepCopyArray (obj) {
+  let result = Array.isArray(obj) ? [] : {}
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (typeof obj[key] === 'object') {
+        result[key] = deepCopyArray(obj[key]) // 递归复制
+      } else {
+        result[key] = obj[key]
+      }
+    }
+  }
+  return result
 }

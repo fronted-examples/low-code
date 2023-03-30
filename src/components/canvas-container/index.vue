@@ -1,7 +1,8 @@
 <template>
   <section class="canvas-container">
     <div class="container-operate">
-      <el-button type="text" icon="el-icon-view"
+      <el-button type="text"
+                 icon="el-icon-view"
                  @click="readJson">查看json</el-button>
     </div>
 
@@ -11,11 +12,11 @@
                :style="{minWidth: page.style.minWidth.value + 'px', minHeight: page.style.minHeight.value + 'px', backgroundColor: page.style.backgroundColor.value}"
                :class="[currentMoveItem && currentMoveItem.id === page.id ? 'selected' : '']"
                @mousedown.stop="selectItem(page)">
-        <div v-if="!componentList.length"
+        <div v-if="!treeList.length"
              class="container-placeholder">
           拖拽组件或模板到这里</div>
 
-        <recursion-component :list="page.children"
+        <recursion-component :list="treeList"
                              read-only
                              @deleteComponent="deleteComponent" />
         <!-- <div class="component-wrap"
@@ -90,8 +91,10 @@
 
         <el-dialog title="查看json"
                    :visible.sync="visible">
-          <ace v-model="json" theme="kuroir"
-               read-only mode="JSON" />
+          <ace v-model="json"
+               theme="kuroir"
+               read-only
+               mode="JSON" />
         </el-dialog>
       </section>
     </div>
@@ -99,7 +102,7 @@
 </template>
 
 <script>
-import { deepCopy } from '@/utils/index'
+import { deepCopyObject } from '@/utils/index'
 import { mapGetters, mapActions } from 'vuex'
 
 import RecursionComponent from '@/components/recursion-component'
@@ -118,11 +121,7 @@ export default {
   data () {
     return {
       componentList: [],
-      currentMoveItem: null,
-      wrapPosition: {
-        top: 0,
-        left: 0
-      },
+      treeList: [],
       visible: false,
       json: ''
     }
@@ -131,15 +130,9 @@ export default {
     ...mapGetters('appModule', ['page'])
   },
   watch: {
-    'wrapPosition.top' (newVal) {
-      this.currentMoveItem.style.top.value = newVal
-    },
-    'wrapPosition.left' (newVal) {
-      this.currentMoveItem.style.left.value = newVal
-    },
     page: {
       handler (newVal) {
-        this.componentList = newVal.children
+        // this.componentList = newVal.children
         this.json = JSON.stringify(newVal, null, 2)
       },
       deep: true,
@@ -183,60 +176,64 @@ export default {
 
       // 不能直接进行对象赋值，浅拷贝一下
       const params = {
+        parentId: e.toElement.id,
         code: code,
         id: `${code}_${Date.parse(new Date())}`,
-        props: deepCopy(props),
-        style: deepCopy(style),
-        advanced: deepCopy(advanced),
+        props: deepCopyObject(props),
+        style: deepCopyObject(style),
+        advanced: deepCopyObject(advanced),
         children: children || []
       }
 
+      console.log('params: ', params)
       console.log(e)
 
       params.style.top.value = e.offsetY
       params.style.left.value = e.offsetX
       params.style.zIndex.value = 1
 
-      this.currentMoveItem = params
-      this.$emit('selectComponent', params)
+      this.componentList.push(params)
 
-      let flag = this.recursionFindListItem(this.componentList, params, e.toElement.id)
+      this.treeList = this.recursionGenerateTree(this.componentList)
 
-      console.log('flag: ', flag)
-
-      // let flag = false
-
-      // for (let i = 0; i < this.componentList.length; i++) {
-      //   if (e.toElement.id === this.componentList[i].id) {
-      //     this.componentList[i].children.push(params)
-      //     flag = true
-      //   }
-      // }
-
-      if (!flag) {
-        this.componentList.push(params)
-      }
-
-      this.page.children = this.componentList
-
+      this.page.children = this.treeList
       this.updatePage(this.page)
 
       console.log('this.componentList: ', this.componentList)
+      console.log('tree: ', this.treeList)
+      console.log('page: ', this.page)
     },
-    recursionFindListItem (array, findItem, findId) {
-      let flag = false
-      if (array.length) {
-        for (let i = 0; i < array.length; i++) {
-          if (array[i].id === findId) {
-            flag = true
-            array[i].children.push(findItem)
-          } else if (array[i].children) {
-            this.recursionDeleteListItem(array[i].children, findItem, findId)
+    recursionGenerateTree (data) {
+      // * 先生成parent建立父子关系
+      const obj = {}
+      data.forEach((item) => {
+        obj[item.id] = item
+      })
+      // * obj -> {1001: {id: 1001, parentId: 0, name: 'AA'}, 1002: {...}}
+      console.log(obj, 'obj')
+      const parentList = []
+      console.log('parentList: ', parentList)
+      data.forEach((item) => {
+        const parent = obj[item.parentId]
+        if (parent) {
+          // * 当前项有父节点
+          parent.children = parent.children || []
+          let flag = false
+          for (let i = 0; i < parent.children.length; i++) {
+            if (parent.children[i].id === item.id) {
+              flag = true
+            }
           }
-        }
-      }
 
-      return flag
+          if (!flag) {
+            parent.children.push(item)
+          }
+        } else {
+          // * 当前项没有父节点 -> 顶层
+          parentList.push(item)
+        }
+      })
+      return parentList
     },
     deleteComponent (item) {
       this.recursionDeleteListItem(this.componentList, item)

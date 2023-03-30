@@ -52,7 +52,6 @@ export default {
         code: 'InputComponent',
         name: '输入框',
         icon: 'input',
-        children: [],
         props: {
           label: {
             type: 'text',
@@ -172,7 +171,7 @@ export default {
             required: false
           }
         },
-        advanced: []
+        advanced: {}
       }, {
         code: 'Button',
         name: '按钮',
