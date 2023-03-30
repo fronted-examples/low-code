@@ -1,6 +1,7 @@
 <template>
   <section class="input">
-    <input @change="handleChange" />
+    <input @change="handleChange"
+           v-model="model[id]" />
   </section>
 </template>
 
@@ -15,7 +16,8 @@ export default {
     methodName: {
       type: String,
       default: ''
-    }
+    },
+    model: Object
   },
   data () {
     return {}

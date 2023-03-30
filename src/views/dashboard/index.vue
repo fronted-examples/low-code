@@ -21,7 +21,8 @@
            style="position: relative;"
            :style="{minWidth: page.style.minWidth.value + 'px', minHeight: page.style.minHeight.value + 'px', backgroundColor: page.style.backgroundColor.value}">
         <recursion-component :list="page.children"
-                             disabled></recursion-component>
+                             disabled
+                             :page="page"></recursion-component>
       </div>
     </preview-page>
   </section>

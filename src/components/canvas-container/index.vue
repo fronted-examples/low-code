@@ -10,7 +10,6 @@
       <section class="page-content"
                ref="pageContent"
                :style="{minWidth: page.style.minWidth.value + 'px', minHeight: page.style.minHeight.value + 'px', backgroundColor: page.style.backgroundColor.value}"
-               :class="[currentMoveItem && currentMoveItem.id === page.id ? 'selected' : '']"
                @mousedown.stop="selectItem(page)">
         <div v-if="!treeList.length"
              class="container-placeholder">
@@ -19,75 +18,6 @@
         <recursion-component :list="treeList"
                              read-only
                              @deleteComponent="deleteComponent" />
-        <!-- <div class="component-wrap"
-             v-for="item in componentList"
-             :id="item.id"
-             :key="item.id"
-             :ref="item.id"
-             :style="{
-          top: `${item.style.top.value}px`,
-          left: `${item.style.left.value}px`,
-          'z-index': `${item.style.zIndex.value}`
-        }"
-             v-drag.outRange="wrapPosition"
-             :class="[currentMoveItem && currentMoveItem.id === item.id ? 'selected' : '']"
-             @mousedown.stop="selectItem(item)">
-          <span class="component-operate"
-                v-if="currentMoveItem && currentMoveItem.id === item.id">
-            <svg-icon icon-class="delete"
-                      @mousedown.stop
-                      @click.stop="deleteItem(item)" />
-          </span>
-          <template v-if="item.code === 'Input'">
-            <input-component />
-          </template>
-
-          <template v-if="item.code === 'Textarea'">
-            <el-input type="textarea"
-                      readonly></el-input>
-          </template>
-
-          <template v-if="item.code === 'Button'">
-            <input type="button"
-                   disabled
-                   value="按钮" />
-          </template>
-
-          <div class="component-wrap"
-               v-for="child in item.children"
-               :id="child.id"
-               :key="child.id"
-               :ref="child.id"
-               :style="{
-          top: `${child.style.top.value}px`,
-          left: `${child.style.left.value}px`,
-          'z-index': `${child.style.zIndex.value}`
-        }"
-               :class="[currentMoveItem && currentMoveItem.id === child.id ? 'selected' : '']"
-               v-drag.outRange="wrapPosition"
-               @mousedown.stop="selectItem(child)">
-            <span class="component-operate"
-                  v-if="currentMoveItem && currentMoveItem.id === child.id">
-              <svg-icon icon-class="delete"
-                        @mousedown.stop
-                        @click.stop="deleteItem(child)" />
-            </span>
-            <template v-if="child.code === 'Input'">
-              <input-component />
-            </template>
-
-            <template v-if="child.code === 'Textarea'">
-              <el-input type="textarea"
-                        readonly></el-input>
-            </template>
-
-            <template v-if="child.code === 'Button'">
-              <input type="button"
-                     disabled
-                     value="按钮" />
-            </template>
-          </div>
-        </div> -->
 
         <el-dialog title="查看json"
                    :visible.sync="visible">
@@ -196,6 +126,7 @@ export default {
 
       this.treeList = this.recursionGenerateTree(this.componentList)
 
+      this.page.model[params.id] = ''
       this.page.children = this.treeList
       this.updatePage(this.page)
 
@@ -236,7 +167,18 @@ export default {
       return parentList
     },
     deleteComponent (item) {
-      this.recursionDeleteListItem(this.componentList, item)
+      this.recursionDeleteListItem(this.treeList, item)
+
+      this.componentList.forEach((component, index) => {
+        if (component.id === item.id) {
+          this.componentList.splice(index, 1)
+        }
+      })
+
+      delete this.page.model[item.id]
+      this.page.children = this.treeList
+
+      this.updatePage(this.page)
     },
     recursionDeleteListItem (array, deleteItem) {
       if (array.length) {

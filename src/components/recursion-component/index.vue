@@ -1,15 +1,20 @@
 <template>
   <fragment>
     <template v-if="disabled">
-      <div v-for="item in list" :key="item.id"
-           :id="item.id" class="item"
-           v-drag.outRange.disabled :style="{
+      <div v-for="item in list"
+           :key="item.id"
+           :id="item.id"
+           class="item"
+           v-drag.outRange.disabled
+           :style="{
           top: `${item.style.top.value}px`,
           left: `${item.style.left.value}px`,
           'z-index': `${item.style.zIndex.value}`
         }">
         {{ item.code }}
-        <component :is="components[item.code]" />
+        <component :is="components[item.code]"
+                   :id="item.id"
+                   :model="page.model" />
 
         <!-- 在遍历时递归调用组件自身，当然，要有children，有数据的时候才去递归调用自身(递归需要有一个结束条件) -->
         <template v-if="item.children">
@@ -22,15 +27,21 @@
     </template>
 
     <template v-if="!disabled">
-      <div v-for="item in list" :key="item.id"
-           :id="item.id" class="item" :class="{
+      <div v-for="item in list"
+           :key="item.id"
+           :id="item.id"
+           class="item"
+           :class="{
             disable: readOnly,
             selected: component && component.id === item.id
-           }" v-drag.outRange="position" :style="{
+           }"
+           v-drag.outRange="position"
+           :style="{
           top: `${item.style.top.value}px`,
           left: `${item.style.left.value}px`,
           'z-index': `${item.style.zIndex.value}`
-        }" @mousedown.stop="selectItem(item)">
+        }"
+           @mousedown.stop="selectItem(item)">
         {{ item.code }}
         <span class="component-operate"
               v-if="component && component.id === item.id">
@@ -58,6 +69,10 @@
 export default {
   name: 'RecursionComponent',
   props: {
+    page: {
+      type: Object,
+      default: () => ({})
+    },
     list: {
       type: Array,
       default () {
