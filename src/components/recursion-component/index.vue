@@ -16,6 +16,7 @@
         <!-- 在遍历时递归调用组件自身，当然，要有children，有数据的时候才去递归调用自身(递归需要有一个结束条件) -->
         <template v-if="item.children">
           <recursion-component :list="item.children"
+                               :page="page"
                                disabled />
           <!-- 因为组件调用渲染，需要有数据，而这个tree.vue组件是的数据是通过props接收的，
         所以需要把子内容数据再传递给子组件，子组件用props接收，就能够一层一层的渲染了 -->
@@ -47,6 +48,7 @@
         <!-- 在遍历时递归调用组件自身，当然，要有children，有数据的时候才去递归调用自身(递归需要有一个结束条件) -->
         <template v-if="item.children">
           <recursion-component :list="item.children"
+                               :page="page"
                                read-only
                                @deleteComponent="deleteComponent"
                                @selectComponent="selectComponent" />
